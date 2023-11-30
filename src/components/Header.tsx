@@ -1,20 +1,17 @@
-import { Box, Container, Typography } from '@mui/material';
+import { Box, Container } from '@mui/material';
+import Logo from './Logo';
 
 export default function Header() {
   return (
     <Box
       component="header"
       sx={{
-        bgcolor: 'lightgreen',
-        padding: 2,
-        border: '2px dashed green',
+        py: 4,
         minHeight: '5vh',
       }}
     >
       <Container>
-        <Typography variant="body2" color="text.primary">
-          Header
-        </Typography>
+        <Logo />
       </Container>
     </Box>
   );

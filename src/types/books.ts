@@ -23,3 +23,13 @@ export type BookType = {
   status: StatusType;
   publishedDate: string;
 };
+
+export type BookDto = {
+  title: string;
+  isbn: string;
+  publisher: string;
+  image: string;
+  authors: string[];
+  genres: string[];
+  publishedDate: string;
+};
