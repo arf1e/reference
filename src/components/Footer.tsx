@@ -1,20 +1,20 @@
-import { Box, Container, Typography } from '@mui/material';
+import { Box, Container, useTheme } from '@mui/material';
+import composeBackgroundColor from '../utils/composeBackgroundColor';
+import Logo from './Logo';
 
 export default function Footer() {
+  const theme = useTheme();
   return (
     <Box
       component="footer"
       sx={{
-        bgcolor: 'lightpink',
-        padding: 2,
-        border: '2px dashed red',
-        minHeight: '15vh',
+        py: 2,
+        minHeight: '10vh',
+        backgroundColor: composeBackgroundColor(theme, 1),
       }}
     >
       <Container>
-        <Typography variant="body2" color="text.primary">
-          Footer
-        </Typography>
+        <Logo />
       </Container>
     </Box>
   );

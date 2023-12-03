@@ -8,7 +8,9 @@ export default styled(Box)`
   }
 
   display: inline-flex;
-  transition: --gradient-border 0.3s;
+  transition:
+    all 0.3s linear,
+    --gradient-border 0.3s ease-in-out;
   font-weight: bold;
   color: ${({ theme }) => theme.palette.text.primary};
   background: ${({ theme }) => {

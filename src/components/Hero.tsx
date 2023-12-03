@@ -1,36 +1,57 @@
-import { Grid, Typography } from '@mui/material';
+import { Box, Button, Container, Grid, Typography } from '@mui/material';
+import Heading from '../styles/styled/Heading';
+import HeroDecoration from './HeroDecoration';
 
 export default function Hero() {
   return (
-    <Grid
-      container
-      spacing={2}
-      sx={{
-        p: 4,
-        my: 4,
-        backgroundColor: 'rgba(10, 20, 200, 0.2)',
-        border: '2px dashed blue',
-      }}
-    >
-      <Grid item sm={6} xs={12}>
-        <Typography variant="h2">Make all the bullshit make sense</Typography>
-        <Typography variant="body2">
-          There is a stupid, long-established habit in IT of coming up with
-          complex terms to describe fairly simple ideas and concepts.
-        </Typography>
-        <Typography variant="body2">
-          However, since the IT industry is growing constantly, understanding
-          these concepts requires understanding the underlying concepts, which
-          have prerequisites as well, and so on.
-        </Typography>
-        <Typography variant="body2" sx={{ fontWeight: 'bold' }}>
-          Our library curates books providing fundamental and specialized
-          knowledge for developers.
-        </Typography>
+    <Container>
+      <Grid
+        container
+        spacing={2}
+        sx={{
+          my: 4,
+          py: 8,
+        }}
+      >
+        <Grid item sm={6} xs={12}>
+          <Heading
+            variant="h3"
+            component="h1"
+            sx={{ mb: 2, overflowX: 'shown', whiteSpace: 'nowrap' }}
+          >
+            Make all the BS make sense.
+          </Heading>
+          <Box sx={{ maxWidth: '80%' }}>
+            <Typography variant="body2" sx={{ mb: 1, lineHeight: '140%' }}>
+              There is a stupid, long-established habit in IT of coming up with
+              complex terms to describe fairly simple ideas and concepts.
+            </Typography>
+            <Typography variant="body2" sx={{ mb: 1, lineHeight: '140%' }}>
+              However, since the IT industry is growing constantly,
+              understanding these concepts requires understanding the underlying
+              concepts, which have prerequisites as well, and so on.
+            </Typography>
+            <Typography
+              variant="body2"
+              sx={{ mb: 1, fontWeight: 'bold', lineHeight: '140%' }}
+            >
+              Our library curates books providing fundamental and specialized
+              knowledge for developers.
+            </Typography>
+            <Box sx={{ mt: 2 }}>
+              <Button variant="contained" disableElevation color="primary">
+                Sign up for free
+              </Button>
+              <Button variant="outlined" color="primary" sx={{ ml: 2 }}>
+                Browse books
+              </Button>
+            </Box>
+          </Box>
+        </Grid>
+        <Grid item sm={6} xs={12}>
+          <HeroDecoration />
+        </Grid>
       </Grid>
-      <Grid item sm={6} xs={12}>
-        <Typography variant="h4">Decorative element</Typography>
-      </Grid>
-    </Grid>
+    </Container>
   );
 }

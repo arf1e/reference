@@ -7,7 +7,7 @@ export default function RootLayout() {
   return (
     <Box>
       <Header />
-      <Box sx={{ minHeight: '80vh' }}>
+      <Box sx={{ minHeight: '85vh' }}>
         <Outlet />
       </Box>
       <Footer />

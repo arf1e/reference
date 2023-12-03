@@ -51,7 +51,9 @@ export default function BooksList() {
     >
       <Typography variant="h5">Books List</Typography>
       {state === BOOKS_LIST &&
-        getAllBooksResponse?.data.books.map((book) => <BookCard book={book} />)}
+        getAllBooksResponse?.data.books.map((book) => (
+          <BookCard key={book._id} book={book} />
+        ))}
       <Typography variant="body2">{JSON.stringify(error)}</Typography>
     </Box>
   );

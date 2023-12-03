@@ -4,7 +4,7 @@ import { RouterProvider } from 'react-router-dom';
 import router from './config/router';
 
 function App() {
-  const theme = createTheme({ palette: { mode: 'light' } });
+  const theme = createTheme({ palette: { mode: 'dark' } });
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
