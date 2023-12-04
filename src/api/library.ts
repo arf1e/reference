@@ -1,7 +1,8 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { API_URL } from '../config/api';
-import { ApiResponse, WithPagination } from '../types/api';
-import { BookType } from '../types/books';
+import { ApiResponse, PaginationInput, WithPagination } from '../types/api';
+import { LoginInput, SignupInput } from '../types/auth';
+import { BookFilters, BookType } from '../types/books';
 
 export const libraryApi = createApi({
   reducerPath: 'libraryApi',
@@ -10,10 +11,11 @@ export const libraryApi = createApi({
   endpoints: (builder) => ({
     getAllBooks: builder.query<
       ApiResponse<WithPagination<{ books: BookType[] }>>,
-      void
+      BookFilters & PaginationInput
     >({
-      query: () => ({
-        url: '/books',
+      query: (filters) => ({
+        url: '/books?limit=1',
+        params: filters,
       }),
     }),
     getBookByIsbn: builder.query<ApiResponse<BookType>, string>({
@@ -21,7 +23,26 @@ export const libraryApi = createApi({
         url: `/books/${isbn}`,
       }),
     }),
+    login: builder.mutation<unknown, LoginInput>({
+      query: (credentials) => ({
+        url: '/auth/login',
+        method: 'POST',
+        body: credentials,
+      }),
+    }),
+    signup: builder.mutation<unknown, SignupInput>({
+      query: (credentials) => ({
+        url: '/auth/signup',
+        method: 'POST',
+        body: credentials,
+      }),
+    }),
   }),
 });
 
-export const { useGetAllBooksQuery, useGetBookByIsbnQuery } = libraryApi;
+export const {
+  useGetAllBooksQuery,
+  useGetBookByIsbnQuery,
+  useLoginMutation,
+  useSignupMutation,
+} = libraryApi;

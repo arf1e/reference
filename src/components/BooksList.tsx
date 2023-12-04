@@ -1,6 +1,10 @@
-import { Box, Typography } from '@mui/material';
+import { Box, Card, Pagination, Typography, useTheme } from '@mui/material';
 import { useEffect, useState } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import { useGetAllBooksQuery } from '../api/library';
+import { AppDispatch, RootState } from '../slices';
+import { selectFilters, selectPagination, setPage } from '../slices/booksSlice';
+import composeBackgroundColor from '../utils/composeBackgroundColor';
 import BookCard from './BookCard';
 
 const BOOKS_LOADING = 'LOADING';
@@ -15,12 +19,23 @@ type BooksListState =
   | typeof BOOKS_EMPTY;
 
 export default function BooksList() {
+  const filters = useSelector((state: RootState) => selectFilters(state.books));
+  const pagination = useSelector((state: RootState) =>
+    selectPagination(state.books)
+  );
+  const dispatch = useDispatch<AppDispatch>();
+
+  const handlePageChange = (value: number) => {
+    dispatch(setPage(value));
+  };
+
   const [state, setState] = useState<BooksListState>(BOOKS_LOADING);
+  const theme = useTheme();
   const {
     data: getAllBooksResponse,
     error,
     isFetching,
-  } = useGetAllBooksQuery();
+  } = useGetAllBooksQuery({ ...filters, ...pagination });
 
   useEffect(() => {
     if (isFetching) {
@@ -39,22 +54,29 @@ export default function BooksList() {
     }
 
     setState(BOOKS_LIST);
-  });
+  }, [isFetching, error, getAllBooksResponse?.data.books.length]);
 
   return (
-    <Box
-      sx={{
-        backgroundColor: 'lightgreen',
-        border: '2px dashed green',
-        minHeight: '24em',
-      }}
-    >
-      <Typography variant="h5">Books List</Typography>
-      {state === BOOKS_LIST &&
-        getAllBooksResponse?.data.books.map((book) => (
-          <BookCard key={book._id} book={book} />
-        ))}
-      <Typography variant="body2">{JSON.stringify(error)}</Typography>
-    </Box>
+    <>
+      <Box sx={{ backgroundColor: composeBackgroundColor(theme, 1) }}>
+        <Typography variant="h5">Books List</Typography>
+        {state === BOOKS_LIST &&
+          getAllBooksResponse?.data.books.map((book) => (
+            <BookCard key={book._id} book={book} />
+          ))}
+        <Typography variant="body2">{JSON.stringify(error)}</Typography>
+      </Box>
+      <Box
+        sx={{
+          backgroundColor: composeBackgroundColor(theme, 1),
+        }}
+      >
+        <Pagination
+          count={getAllBooksResponse?.data.pagination.totalPages}
+          page={pagination.page}
+          onChange={(_event, page) => handlePageChange(page)}
+        />
+      </Box>
+    </>
   );
 }

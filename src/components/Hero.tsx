@@ -1,8 +1,10 @@
 import { Box, Button, Container, Grid, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
 import Heading from '../styles/styled/Heading';
 import HeroDecoration from './HeroDecoration';
 
 export default function Hero() {
+  const navigate = useNavigate();
   return (
     <Container>
       <Grid
@@ -14,11 +16,7 @@ export default function Hero() {
         }}
       >
         <Grid item sm={6} xs={12}>
-          <Heading
-            variant="h3"
-            component="h1"
-            sx={{ mb: 2, overflowX: 'shown', whiteSpace: 'nowrap' }}
-          >
+          <Heading variant="h4" component="h1" sx={{ mb: 2 }}>
             Make all the BS make sense.
           </Heading>
           <Box sx={{ maxWidth: '80%' }}>
@@ -39,10 +37,15 @@ export default function Hero() {
               knowledge for developers.
             </Typography>
             <Box sx={{ mt: 2 }}>
-              <Button variant="contained" disableElevation color="primary">
+              <Button
+                variant="text"
+                disableElevation
+                color="primary"
+                onClick={() => navigate('/auth')}
+              >
                 Sign up for free
               </Button>
-              <Button variant="outlined" color="primary" sx={{ ml: 2 }}>
+              <Button variant="text" color="secondary" sx={{ ml: 2 }}>
                 Browse books
               </Button>
             </Box>

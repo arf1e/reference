@@ -1,4 +1,4 @@
-import { Box, Container, Typography } from '@mui/material';
+import { Box, Container } from '@mui/material';
 import Heading from '../styles/styled/Heading';
 import BooksFilters from './BooksFilters';
 import BooksList from './BooksList';

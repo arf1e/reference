@@ -1,16 +1,7 @@
-export type GenreType = {
-  _id: string;
-  title: string;
-};
+import { AuthorType } from './authors';
+import { GenreType } from './genres';
 
 export type StatusType = 'available' | 'borrowed';
-
-export type AuthorType = {
-  _id: string;
-  name: string;
-  bio: string;
-  image: string;
-};
 
 export type BookType = {
   _id: string;
@@ -33,3 +24,9 @@ export type BookDto = {
   genres: string[];
   publishedDate: string;
 };
+
+export interface BookFilters {
+  title: string;
+  author: string;
+  genre: string;
+}

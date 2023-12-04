@@ -1,8 +1,12 @@
 import { Box, Button, TextField, Typography, useTheme } from '@mui/material';
 import { Formik } from 'formik';
-import Heading from '../styles/styled/Heading';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from '../slices';
+import { clearFilters, setFilters } from '../slices/booksSlice';
 import { ApiResponse, WithPagination } from '../types/api';
-import { AuthorType, GenreType } from '../types/books';
+import { AuthorType } from '../types/authors';
+import { BookFilters } from '../types/books';
+import { GenreType } from '../types/genres';
 import composeBackgroundColor from '../utils/composeBackgroundColor';
 import AutocompleteInput from './AutocompleteInput';
 
@@ -15,8 +19,24 @@ const GenresAutocompleteInput = AutocompleteInput<
   ApiResponse<WithPagination<{ genres: GenreType[] }>>
 >;
 
+const filtersDefaultValues: BookFilters = {
+  title: '',
+  author: '',
+  genre: '',
+};
+
 export default function BooksFilters() {
   const theme = useTheme();
+  const dispatch = useDispatch<AppDispatch>();
+
+  const applyFilters = (filters: BookFilters) => {
+    dispatch(setFilters(filters));
+  };
+
+  const resetFilters = () => {
+    dispatch(clearFilters());
+  };
+
   return (
     <Box
       sx={{
@@ -29,14 +49,21 @@ export default function BooksFilters() {
       <Typography variant="h6" component="h3" sx={{ mb: 2 }}>
         Filters
       </Typography>
-      <Formik initialValues={{ title: '' }} onSubmit={console.log}>
+      <Formik
+        initialValues={filtersDefaultValues}
+        onSubmit={applyFilters}
+        onReset={resetFilters}
+      >
         {(formikProps) => (
           <Box
             component="form"
-            sx={{}}
             onSubmit={(e) => {
               e.preventDefault();
               formikProps.submitForm();
+            }}
+            onReset={(e) => {
+              e.preventDefault();
+              formikProps.resetForm();
             }}
           >
             <Box
@@ -44,24 +71,26 @@ export default function BooksFilters() {
                 mb: 2,
                 display: 'flex',
                 justifyContent: 'space-between',
-                flexWrap: 'wrap',
                 gap: 2,
               }}
             >
               <TextField
                 label="Title"
-                variant="outlined"
+                variant="filled"
                 fullWidth
                 name="title"
                 value={formikProps.values.title}
                 onChange={formikProps.handleChange}
-                sx={{ mb: 2 }}
               />
               <AuthorsAutocompleteInput
-                onChooseElement={console.log}
+                onChooseElement={(author) =>
+                  formikProps.setFieldValue('author', author._id)
+                }
                 suggestionsExtractor={({ data }) => data.authors}
                 valueExtractor={(author) => author.name}
+                fullWidth
                 endpoint="authors"
+                variant="filled"
                 param="name"
                 label="Author"
               />
@@ -69,14 +98,19 @@ export default function BooksFilters() {
                 onChooseElement={console.log}
                 valueExtractor={(genre) => genre.title}
                 suggestionsExtractor={({ data }) => data.genres}
+                fullWidth
                 label="Genre"
+                variant="filled"
                 endpoint="genres"
                 param="title"
               />
             </Box>
-            <Button variant="contained" color="primary" type="submit">
-              Search
-            </Button>
+            <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
+              <Button type="submit">Search</Button>
+              <Button type="reset" variant="text" color="error">
+                Clear
+              </Button>
+            </Box>
           </Box>
         )}
       </Formik>

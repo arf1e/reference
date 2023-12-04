@@ -14,3 +14,7 @@ export type ApiResponse<Data = {}> = {
   data: Data;
   message?: string;
 };
+
+export interface PaginationInput {
+  page: number;
+}
