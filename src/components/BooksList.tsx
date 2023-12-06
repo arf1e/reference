@@ -1,5 +1,5 @@
-import { Box, Card, Pagination, Typography, useTheme } from '@mui/material';
-import { useEffect, useState } from 'react';
+import { Box, Grid, Pagination, Typography, useTheme } from '@mui/material';
+import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useGetAllBooksQuery } from '../api/library';
 import { AppDispatch, RootState } from '../slices';
@@ -56,27 +56,30 @@ export default function BooksList() {
     setState(BOOKS_LIST);
   }, [isFetching, error, getAllBooksResponse?.data.books.length]);
 
+  const renderList = useMemo(
+    () => (
+      <Grid container spacing={4}>
+        {getAllBooksResponse?.data.books.map((book) => (
+          <BookCard key={book._id} book={book} />
+        ))}
+      </Grid>
+    ),
+    [getAllBooksResponse?.data.books]
+  );
+
   return (
     <>
-      <Box sx={{ backgroundColor: composeBackgroundColor(theme, 1) }}>
-        <Typography variant="h5">Books List</Typography>
-        {state === BOOKS_LIST &&
-          getAllBooksResponse?.data.books.map((book) => (
-            <BookCard key={book._id} book={book} />
-          ))}
-        <Typography variant="body2">{JSON.stringify(error)}</Typography>
-      </Box>
-      <Box
-        sx={{
-          backgroundColor: composeBackgroundColor(theme, 1),
-        }}
-      >
-        <Pagination
-          count={getAllBooksResponse?.data.pagination.totalPages}
-          page={pagination.page}
-          onChange={(_event, page) => handlePageChange(page)}
-        />
-      </Box>
+      {state === BOOKS_LIST && renderList}
+      {state === BOOKS_EMPTY && <Typography>empty</Typography>}
+      {state === BOOKS_LOADING && <Typography>loading</Typography>}
+      {state === BOOKS_ERROR && <Typography>error</Typography>}
+      <Pagination
+        count={getAllBooksResponse?.data.pagination.totalPages}
+        page={pagination.page}
+        shape="rounded"
+        sx={{ mt: 2 }}
+        onChange={(_event, page) => handlePageChange(page)}
+      />
     </>
   );
 }

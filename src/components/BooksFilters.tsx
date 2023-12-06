@@ -42,8 +42,8 @@ export default function BooksFilters() {
       sx={{
         my: 4,
         background: composeBackgroundColor(theme, 1),
-        borderRadius: 4,
-        padding: 4,
+        borderRadius: 2,
+        padding: 2,
       }}
     >
       <Typography variant="h6" component="h3" sx={{ mb: 2 }}>
@@ -95,7 +95,9 @@ export default function BooksFilters() {
                 label="Author"
               />
               <GenresAutocompleteInput
-                onChooseElement={console.log}
+                onChooseElement={(genre) =>
+                  formikProps.setFieldValue('genre', genre._id)
+                }
                 valueExtractor={(genre) => genre.title}
                 suggestionsExtractor={({ data }) => data.genres}
                 fullWidth

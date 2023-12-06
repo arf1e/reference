@@ -5,6 +5,7 @@ import '@fontsource/roboto/700.css';
 import ReactDOM from 'react-dom/client';
 import { Provider } from 'react-redux';
 import App from './App';
+import ColorModeProvider from './components/ColorModeProvider';
 import { store } from './slices';
 
 const root = ReactDOM.createRoot(
@@ -12,6 +13,8 @@ const root = ReactDOM.createRoot(
 );
 root.render(
   <Provider store={store}>
-    <App />
+    <ColorModeProvider>
+      <App />
+    </ColorModeProvider>
   </Provider>
 );

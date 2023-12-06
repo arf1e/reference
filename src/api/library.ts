@@ -14,7 +14,7 @@ export const libraryApi = createApi({
       BookFilters & PaginationInput
     >({
       query: (filters) => ({
-        url: '/books?limit=1',
+        url: '/books',
         params: filters,
       }),
     }),
@@ -37,6 +37,12 @@ export const libraryApi = createApi({
         body: credentials,
       }),
     }),
+    getMyProfile: builder.query<ApiResponse<{ user: any }>, void>({
+      query: () => ({
+        url: '/auth/me',
+        method: 'GET',
+      }),
+    }),
   }),
 });
 
@@ -45,4 +51,5 @@ export const {
   useGetBookByIsbnQuery,
   useLoginMutation,
   useSignupMutation,
+  useGetMyProfileQuery,
 } = libraryApi;

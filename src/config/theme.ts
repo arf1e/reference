@@ -1,9 +1,11 @@
-import { createTheme } from '@mui/system';
+import { createTheme } from '@mui/material';
+import { ColorModeType } from '../hooks/useColorMode';
 
-export default function composeTheme() {
-  return createTheme({
+const composeTheme = (mode: ColorModeType) =>
+  createTheme({
     palette: {
-      mode: 'light',
+      mode,
     },
   });
-}
+
+export default composeTheme;
