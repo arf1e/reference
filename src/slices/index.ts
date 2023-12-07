@@ -1,18 +1,52 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { AnyAction, configureStore } from '@reduxjs/toolkit';
 import { setupListeners } from '@reduxjs/toolkit/query';
 import { libraryApi } from '../api/library';
-import cartReducer from './cartSlice';
+import {
+  FLUSH,
+  PAUSE,
+  PERSIST,
+  persistReducer,
+  PURGE,
+  REGISTER,
+  REHYDRATE,
+} from 'redux-persist';
+import cartReducer, { CartState } from './cartSlice';
+import authReducer, { AuthState } from './authSlice';
 import booksReducer from './booksSlice';
+import localforage from 'localforage';
+import persistStore from 'redux-persist/es/persistStore';
+
+const cartPersistConfig = {
+  key: 'cart',
+  storage: localforage,
+};
+
+const authPersistConfig = {
+  key: 'auth',
+  storage: localforage,
+  blacklist: ['user'],
+};
 
 export const initiateStore = () =>
   configureStore({
     reducer: {
       [libraryApi.reducerPath]: libraryApi.reducer,
-      cart: cartReducer,
+      cart: persistReducer<CartState, AnyAction>(
+        cartPersistConfig,
+        cartReducer
+      ),
       books: booksReducer,
+      auth: persistReducer<AuthState, AnyAction>(
+        authPersistConfig,
+        authReducer
+      ),
     },
     middleware(getDefaultMiddleware) {
-      return getDefaultMiddleware().concat(libraryApi.middleware);
+      return getDefaultMiddleware({
+        serializableCheck: {
+          ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        },
+      }).concat(libraryApi.middleware);
     },
   });
 
@@ -21,3 +55,5 @@ setupListeners(store.dispatch);
 
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
+
+export const persistor = persistStore(store);

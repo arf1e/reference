@@ -31,6 +31,11 @@ export const cartSlice = createSlice({
 
 export const selectBooksInCart = (state: CartState) => state.books;
 
+export const selectBookEntry = (state: CartState, bookId: string) => {
+  const bookFound = state.books.find((book) => book._id === bookId);
+  return Boolean(bookFound);
+};
+
 export const { addBook, removeBook, clearCart } = cartSlice.actions;
 
 export default cartSlice.reducer;

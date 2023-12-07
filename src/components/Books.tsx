@@ -12,7 +12,7 @@ export default function Books() {
       }}
     >
       <Container>
-        <Heading variant="h4" component="h2">
+        <Heading variant="h5" component="h2">
           Books
         </Heading>
         <Box>

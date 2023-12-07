@@ -1,7 +1,9 @@
 import { Box, Grid, Typography, useTheme } from '@mui/material';
 import { Link } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
 import { BookType } from '../types/books';
 import composeBackgroundColor from '../utils/composeBackgroundColor';
+import LendListControls from './LendListControls';
 
 type Props = {
   book: BookType;
@@ -9,6 +11,7 @@ type Props = {
 
 export default function BookCard({ book }: Props) {
   const theme = useTheme();
+  const { user } = useAuth();
   return (
     <Grid item xs={12} sm={6} md={4} lg={3}>
       <Link to={`/books/${book.isbn}`} style={{ textDecoration: 'none' }}>
@@ -35,6 +38,7 @@ export default function BookCard({ book }: Props) {
           <Typography variant="caption" component="p">
             {book.genres.map((genre) => genre.title).join(', ')}
           </Typography>
+          {user && <LendListControls book={book} />}
         </Box>
       </Link>
     </Grid>

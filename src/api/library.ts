@@ -1,8 +1,9 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { API_URL } from '../config/api';
 import { ApiResponse, PaginationInput, WithPagination } from '../types/api';
-import { LoginInput, SignupInput } from '../types/auth';
+import { JwtResponse, LoginInput, SignupInput } from '../types/auth';
 import { BookFilters, BookType } from '../types/books';
+import { UserType } from '../types/users';
 
 export const libraryApi = createApi({
   reducerPath: 'libraryApi',
@@ -23,24 +24,27 @@ export const libraryApi = createApi({
         url: `/books/${isbn}`,
       }),
     }),
-    login: builder.mutation<unknown, LoginInput>({
+    login: builder.mutation<ApiResponse<JwtResponse>, LoginInput>({
       query: (credentials) => ({
         url: '/auth/login',
         method: 'POST',
         body: credentials,
       }),
     }),
-    signup: builder.mutation<unknown, SignupInput>({
+    signup: builder.mutation<ApiResponse<JwtResponse>, SignupInput>({
       query: (credentials) => ({
         url: '/auth/signup',
         method: 'POST',
         body: credentials,
       }),
     }),
-    getMyProfile: builder.query<ApiResponse<{ user: any }>, void>({
-      query: () => ({
+    getMyProfile: builder.query<ApiResponse<UserType>, string>({
+      query: (accessToken: string) => ({
         url: '/auth/me',
         method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
       }),
     }),
   }),
@@ -52,4 +56,5 @@ export const {
   useLoginMutation,
   useSignupMutation,
   useGetMyProfileQuery,
+  useLazyGetMyProfileQuery,
 } = libraryApi;

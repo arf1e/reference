@@ -8,10 +8,15 @@ import {
   Zoom,
 } from '@mui/material';
 import { Formik } from 'formik';
+import { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useSignupMutation } from '../api/library';
+import useStatusBar from '../hooks/useStatusBar';
+import StatusBar from '../styles/styled/StatusBar';
 import { SignupInput } from '../types/auth';
 import composeBackgroundColor from '../utils/composeBackgroundColor';
+import handleAsyncOperation from '../utils/handleAsyncOperation';
 
 type Props = {
   switchToLogin: () => void;
@@ -34,16 +39,37 @@ const validationSchema = yup.object({
 });
 
 export default function SignupForm({ switchToLogin }: Props) {
+  const { formState, message, setFormState, setMessage } = useStatusBar();
+  const navigate = useNavigate();
   const theme = useTheme();
   const [signup] = useSignupMutation();
 
+  const handleSignupSuccess = useCallback(() => {
+    setFormState('SUCCESS');
+    setMessage('Account created successfully');
+    navigate('/me');
+  }, [setFormState, setMessage, navigate]);
+
+  const handleSignupError = useCallback(
+    (error: string) => {
+      setFormState('ERROR');
+      setMessage(error);
+    },
+    [setFormState, setMessage]
+  );
+
   const handleSignup = async (values: SignupInput) => {
-    const res = await signup(values);
+    setFormState('LOADING');
+    await handleAsyncOperation(() => signup(values), {
+      onSuccess: handleSignupSuccess,
+      onError: handleSignupError,
+    });
   };
 
   return (
     <Zoom in={true}>
       <Box>
+        <StatusBar state={formState}>{message}</StatusBar>
         <Formik
           initialValues={initialValues}
           validationSchema={validationSchema}
@@ -58,7 +84,7 @@ export default function SignupForm({ switchToLogin }: Props) {
               }}
               sx={{
                 p: 2,
-                borderRadius: 2,
+                borderRadius: formState === 'IDLE' ? 2 : 0,
                 backgroundColor: composeBackgroundColor(theme, 1),
               }}
             >

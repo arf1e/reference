@@ -10,3 +10,7 @@ export interface SignupInput {
   lastName: string;
   image: string;
 }
+
+export type JwtResponse = {
+  accessToken: string;
+};

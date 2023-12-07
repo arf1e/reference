@@ -8,6 +8,7 @@ import {
 } from '@mui/material';
 import { Formik } from 'formik';
 import { useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import * as yup from 'yup';
 import { useLoginMutation } from '../api/library';
 import useStatusBar from '../hooks/useStatusBar';
@@ -33,12 +34,14 @@ type Props = {
 export default function LoginForm({ switchToSignup }: Props) {
   const { formState, message, setFormState, setMessage } = useStatusBar();
   const theme = useTheme();
+  const navigate = useNavigate();
   const [login] = useLoginMutation();
 
   const handleLoginSuccess = useCallback(() => {
     setFormState('SUCCESS');
     setMessage('Login successful');
-  }, [setFormState, setMessage]);
+    navigate('/me');
+  }, [setFormState, setMessage, navigate]);
 
   const handleLoginError = useCallback(
     (error: string) => {

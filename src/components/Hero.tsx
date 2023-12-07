@@ -1,10 +1,8 @@
-import { Box, Button, Container, Grid, Typography } from '@mui/material';
-import { useNavigate } from 'react-router-dom';
+import { Box, Container, Grid, Typography } from '@mui/material';
 import Heading from '../styles/styled/Heading';
 import HeroDecoration from './HeroDecoration';
 
 export default function Hero() {
-  const navigate = useNavigate();
   return (
     <Container>
       <Grid
@@ -36,19 +34,6 @@ export default function Hero() {
               Our library curates books providing fundamental and specialized
               knowledge for developers.
             </Typography>
-            <Box sx={{ mt: 2 }}>
-              <Button
-                variant="text"
-                disableElevation
-                color="primary"
-                onClick={() => navigate('/auth')}
-              >
-                Sign up for free
-              </Button>
-              <Button variant="text" color="secondary" sx={{ ml: 2 }}>
-                Browse books
-              </Button>
-            </Box>
           </Box>
         </Grid>
         <Grid item sm={6} xs={12}>

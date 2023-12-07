@@ -1,4 +1,5 @@
 import { Box, Container } from '@mui/material';
+import LendListButton from './LendListButton';
 import Logo from './Logo';
 import ProfileButton from './ProfileButton';
 import ThemeSwitch from './ThemeSwitch';
@@ -29,6 +30,7 @@ export default function Header() {
           >
             <ThemeSwitch />
             <ProfileButton />
+            <LendListButton />
           </Box>
         </Box>
       </Container>
