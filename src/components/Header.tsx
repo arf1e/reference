@@ -1,4 +1,5 @@
 import { Box, Container } from '@mui/material';
+import CartOverlay from './CartOverlay';
 import LendListButton from './LendListButton';
 import Logo from './Logo';
 import ProfileButton from './ProfileButton';
@@ -13,6 +14,7 @@ export default function Header() {
         minHeight: '5vh',
       }}
     >
+      <CartOverlay />
       <Container>
         <Box
           sx={{

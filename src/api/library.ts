@@ -47,6 +47,32 @@ export const libraryApi = createApi({
         },
       }),
     }),
+    lendBooks: builder.mutation<
+      ApiResponse<{ borrowedBooks: string[] }>,
+      { userId: string; bookIds: string[]; accessToken: string }
+    >({
+      query: ({ userId, bookIds, accessToken }) => ({
+        url: `/users/${userId}/borrow`,
+        method: 'POST',
+        body: bookIds,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }),
+    }),
+    returnBooks: builder.mutation<
+      ApiResponse<{ returnedBooks: string[] }>,
+      { userId: string; bookIds: string[]; accessToken: string }
+    >({
+      query: ({ userId, bookIds, accessToken }) => ({
+        url: `/users/${userId}/return`,
+        method: 'POST',
+        body: bookIds,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }),
+    }),
   }),
 });
 
@@ -57,4 +83,5 @@ export const {
   useSignupMutation,
   useGetMyProfileQuery,
   useLazyGetMyProfileQuery,
+  useLendBooksMutation,
 } = libraryApi;

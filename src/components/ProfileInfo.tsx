@@ -1,5 +1,9 @@
 import { EditOutlined, LockOutlined } from '@mui/icons-material';
 import { Avatar, Box, Button, Grid, Typography, useTheme } from '@mui/material';
+import { useDispatch } from 'react-redux';
+import useOwnership from '../hooks/useOwnership';
+import { AppDispatch } from '../slices';
+import { logout } from '../slices/authSlice';
 import Heading from '../styles/styled/Heading';
 import { UserType } from '../types/users';
 import composeBackgroundColor from '../utils/composeBackgroundColor';
@@ -13,6 +17,13 @@ const PROFILE_IMAGE_SIZE = 150;
 
 export default function ProfileInfo({ user }: Props) {
   const theme = useTheme();
+  const isOwn = useOwnership(user._id);
+  const dispatch = useDispatch<AppDispatch>();
+
+  const handleLogout = () => {
+    dispatch(logout());
+  };
+
   return (
     <Grid container alignItems="center" justifyContent="center" sx={{ mt: 10 }}>
       <Grid
@@ -83,6 +94,16 @@ export default function ProfileInfo({ user }: Props) {
             >
               Change Password
             </Button>
+            {isOwn && (
+              <Button
+                onClick={handleLogout}
+                variant="text"
+                sx={{ ml: 'auto' }}
+                color="error"
+              >
+                Logout
+              </Button>
+            )}
           </Box>
         </Box>
       </Grid>

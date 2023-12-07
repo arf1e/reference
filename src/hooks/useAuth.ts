@@ -12,6 +12,7 @@ import { UserType } from '../types/users';
 export default function useAuth(): {
   isLoading: boolean;
   user: UserType | null;
+  jwt: string | null;
 } {
   const [isLoading, setIsLoading] = useState(true);
   const [user, setUser] = useState<UserType | null>(null);
@@ -40,5 +41,5 @@ export default function useAuth(): {
     }); // API matchers will set the user automatically
   }, [jwt, locallyExistingUser, getProfile]);
 
-  return { isLoading, user };
+  return { isLoading, user, jwt };
 }
