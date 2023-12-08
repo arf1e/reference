@@ -5,8 +5,10 @@ import { useEffect, useMemo, useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLendBooksMutation } from '../api/library';
 import useAuth from '../hooks/useAuth';
+import useToaster from '../hooks/useToaster';
 import { RootState } from '../slices';
 import { selectBooksInCart } from '../slices/cartSlice';
+import { ApiResponse } from '../types/api';
 import handleAsyncOperation from '../utils/handleAsyncOperation';
 
 type Props = {
@@ -29,6 +31,7 @@ export default function LendBooksButton({ onLend }: Props) {
     selectBooksInCart(state.cart)
   );
   const [lendBooks] = useLendBooksMutation();
+  const { showSuccessMessage } = useToaster();
 
   useEffect(() => {
     if (isAuthLoading) {
@@ -58,8 +61,14 @@ export default function LendBooksButton({ onLend }: Props) {
     return null;
   }
 
-  const onLendBooksSuccess = () => {
+  const onLendBooksSuccess = (
+    result: ApiResponse<{ data: { borrowedBooks: string[] } }>
+  ) => {
     setState(STATE_IDLE);
+    const booksQty = result.data.data.borrowedBooks.length;
+    showSuccessMessage(
+      `Successfully borrowed ${booksQty} ${pluralize('book', booksQty)}`
+    );
     onLend();
   };
 
@@ -72,7 +81,12 @@ export default function LendBooksButton({ onLend }: Props) {
     const bookIds = books.map((book) => book._id);
     await handleAsyncOperation(
       () => lendBooks({ userId: user._id, bookIds, accessToken: jwt }),
-      { onSuccess: onLendBooksSuccess, onError: onLendBooksError }
+      {
+        onSuccess: (
+          result: ApiResponse<{ data: { borrowedBooks: string[] } }>
+        ) => onLendBooksSuccess(result),
+        onError: onLendBooksError,
+      }
     );
   };
 

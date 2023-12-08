@@ -1,3 +1,5 @@
+import { BookType } from './books';
+
 const ADMIN_ROLE = 'ADMIN';
 const USER_ROLE = 'USER';
 
@@ -10,4 +12,5 @@ export type UserType = {
   lastName: string;
   image: string;
   role: UserRole;
+  borrowedBooks: BookType[];
 };

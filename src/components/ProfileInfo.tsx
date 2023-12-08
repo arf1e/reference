@@ -1,12 +1,27 @@
 import { EditOutlined, LockOutlined } from '@mui/icons-material';
-import { Avatar, Box, Button, Grid, Typography, useTheme } from '@mui/material';
+import {
+  Avatar,
+  Box,
+  Button,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+  Grid,
+  Typography,
+  useTheme,
+} from '@mui/material';
+import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import useOwnership from '../hooks/useOwnership';
 import { AppDispatch } from '../slices';
 import { logout } from '../slices/authSlice';
+import { clearCart } from '../slices/cartSlice';
 import Heading from '../styles/styled/Heading';
 import { UserType } from '../types/users';
 import composeBackgroundColor from '../utils/composeBackgroundColor';
+import BorrowedBooks from './BorrowedBooks';
 
 type Props = {
   user: UserType;
@@ -16,12 +31,23 @@ type Props = {
 const PROFILE_IMAGE_SIZE = 150;
 
 export default function ProfileInfo({ user }: Props) {
+  const [alertOpen, setAlertOpen] = useState(false);
   const theme = useTheme();
   const isOwn = useOwnership(user._id);
   const dispatch = useDispatch<AppDispatch>();
 
+  const openAlert = () => {
+    setAlertOpen(true);
+  };
+
+  const closeAlert = () => {
+    setAlertOpen(false);
+  };
+
   const handleLogout = () => {
     dispatch(logout());
+    dispatch(clearCart());
+    closeAlert();
   };
 
   return (
@@ -96,7 +122,7 @@ export default function ProfileInfo({ user }: Props) {
             </Button>
             {isOwn && (
               <Button
-                onClick={handleLogout}
+                onClick={openAlert}
                 variant="text"
                 sx={{ ml: 'auto' }}
                 color="error"
@@ -107,6 +133,38 @@ export default function ProfileInfo({ user }: Props) {
           </Box>
         </Box>
       </Grid>
+      {user.borrowedBooks.length > 0 && (
+        <Grid xs={12} item>
+          <Heading variant="h4" component="h2" sx={{ mt: 4 }}>
+            Borrowed books
+          </Heading>
+          <BorrowedBooks borrower={user} />
+        </Grid>
+      )}
+      {isOwn && (
+        <Dialog
+          open={alertOpen}
+          onClose={closeAlert}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">
+            Are you sure you want to logout?
+          </DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              You will be logged out and redirected to the home page. If you
+              have any books in your lending cart, they will be removed.
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={closeAlert}>No, take me back</Button>
+            <Button onClick={handleLogout} color="error">
+              Logout
+            </Button>
+          </DialogActions>
+        </Dialog>
+      )}
     </Grid>
   );
 }

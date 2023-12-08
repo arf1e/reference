@@ -1,14 +1,8 @@
 import { ClearOutlined, UpcomingOutlined } from '@mui/icons-material';
-import {
-  Box,
-  Button,
-  CircularProgress,
-  Collapse,
-  Divider,
-} from '@mui/material';
-import pluralize from 'pluralize';
+import { Box, Button, Collapse, Divider } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { TransitionGroup } from 'react-transition-group';
+import useCartOverlay from '../hooks/useCartOverlay';
 import { AppDispatch } from '../slices';
 import { clearCart } from '../slices/cartSlice';
 import { BookType } from '../types/books';
@@ -22,6 +16,12 @@ type Props = {
 export default function LendList({ books }: Props) {
   const dispatch = useDispatch<AppDispatch>();
   const clearList = () => dispatch(clearCart());
+  const { hideCartOverlay } = useCartOverlay();
+
+  const onLend = () => {
+    clearList();
+    hideCartOverlay();
+  };
 
   return (
     <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2, mt: 4 }}>
@@ -34,7 +34,7 @@ export default function LendList({ books }: Props) {
       </TransitionGroup>
       <Divider sx={{ width: '100%' }} role="presentation" />
       <Box sx={{ display: 'flex', justifyContent: 'flex-end' }}>
-        <LendBooksButton onLend={clearList} />
+        <LendBooksButton onLend={onLend} />
         <Button
           color="error"
           sx={{ ml: 2 }}

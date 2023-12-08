@@ -8,7 +8,7 @@ import { UserType } from '../types/users';
 export const libraryApi = createApi({
   reducerPath: 'libraryApi',
   baseQuery: fetchBaseQuery({ baseUrl: API_URL }),
-  tagTypes: ['Book', 'Author', 'Genre'],
+  tagTypes: ['Book', 'Author', 'Genre', 'User'],
   endpoints: (builder) => ({
     getAllBooks: builder.query<
       ApiResponse<WithPagination<{ books: BookType[] }>>,
@@ -18,11 +18,22 @@ export const libraryApi = createApi({
         url: '/books',
         params: filters,
       }),
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.data.books.map(({ _id }) => ({
+                type: 'Book' as const,
+                id: _id,
+              })),
+            ]
+          : ['Book'],
     }),
     getBookByIsbn: builder.query<ApiResponse<BookType>, string>({
       query: (isbn) => ({
         url: `/books/${isbn}`,
       }),
+      providesTags: (result) =>
+        result ? [{ type: 'Book', id: result.data._id }] : [],
     }),
     login: builder.mutation<ApiResponse<JwtResponse>, LoginInput>({
       query: (credentials) => ({
@@ -46,6 +57,8 @@ export const libraryApi = createApi({
           Authorization: `Bearer ${accessToken}`,
         },
       }),
+      providesTags: (result) =>
+        result ? [{ type: 'User', id: result.data._id }] : [],
     }),
     lendBooks: builder.mutation<
       ApiResponse<{ borrowedBooks: string[] }>,
@@ -59,6 +72,16 @@ export const libraryApi = createApi({
           Authorization: `Bearer ${accessToken}`,
         },
       }),
+      invalidatesTags: (result, _error, { userId }) =>
+        result
+          ? [
+              ...result.data.borrowedBooks.map((bookId) => ({
+                type: 'Book' as const,
+                id: bookId,
+              })),
+              { type: 'User', id: userId },
+            ]
+          : [],
     }),
     returnBooks: builder.mutation<
       ApiResponse<{ returnedBooks: string[] }>,
@@ -72,6 +95,16 @@ export const libraryApi = createApi({
           Authorization: `Bearer ${accessToken}`,
         },
       }),
+      invalidatesTags: (result, _error, { userId }) =>
+        result
+          ? [
+              ...result.data.returnedBooks.map((bookId) => ({
+                type: 'Book' as const,
+                id: bookId,
+              })),
+              { type: 'User', id: userId },
+            ]
+          : [],
     }),
   }),
 });
@@ -84,4 +117,5 @@ export const {
   useGetMyProfileQuery,
   useLazyGetMyProfileQuery,
   useLendBooksMutation,
+  useReturnBooksMutation,
 } = libraryApi;
