@@ -1,18 +1,19 @@
-import { Typography } from '@mui/material';
-import { Box } from '@mui/system';
+import { CircularProgress, Typography } from '@mui/material';
 import { useParams } from 'react-router-dom';
 import { useGetBookByIsbnQuery } from '../api/library';
+import BookData from '../components/BookData';
 
 export default function Book() {
   const { isbn } = useParams<{ isbn: string }>() as { isbn: string };
-  const { data: getBookByIsbnResponse } = useGetBookByIsbnQuery(isbn);
+  const { data: getBookByIsbnResponse, isFetching } =
+    useGetBookByIsbnQuery(isbn);
 
   return (
-    <Box>
-      <Typography variant="h5">Book</Typography>
-      <Typography variant="body2">
-        {JSON.stringify(getBookByIsbnResponse?.data)}
-      </Typography>
-    </Box>
+    <>
+      {isFetching && <CircularProgress size={20} />}
+      {getBookByIsbnResponse?.data && (
+        <BookData book={getBookByIsbnResponse.data} />
+      )}
+    </>
   );
 }

@@ -76,7 +76,6 @@ export default function LendBooksButton({ onLend }: Props) {
     );
   };
 
-
   return (
     <Button
       variant="contained"
