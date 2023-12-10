@@ -5,6 +5,7 @@ import { BookType } from '../types/books';
 import composeBackgroundColor from '../utils/composeBackgroundColor';
 import composeHoverBackgroundColor from '../utils/composeHoverBackgroundColor';
 import LendListControls from './LendListControls';
+import StatusChip from './StatusChip';
 
 type Props = {
   book: BookType;
@@ -38,10 +39,11 @@ export default function BookCard({ book }: Props) {
             width="100%"
             style={{ transition: '0.3s' }}
           />
+          <StatusChip book={book} size="small" sx={{ my: 1 }} />
           <Typography
             variant="subtitle2"
             component="h4"
-            sx={{ lineHeight: '120%', mb: 1, mt: 2 }}
+            sx={{ lineHeight: '120%', mb: 1 }}
           >
             {book.title}
           </Typography>
@@ -51,7 +53,7 @@ export default function BookCard({ book }: Props) {
           <Typography variant="caption" component="p">
             {book.genres.map((genre) => genre.title).join(', ')}
           </Typography>
-          {user && <LendListControls book={book} sx={{ mt: 2 }} />}
+          {user && <LendListControls book={book} sx={{ mt: 2 }} />}{' '}
         </Box>
       </Link>
     </Grid>

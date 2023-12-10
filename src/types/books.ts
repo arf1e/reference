@@ -13,6 +13,7 @@ export type BookType = {
   genres: GenreType[];
   status: StatusType;
   publishedDate: string;
+  borrowerId?: string;
 };
 
 export type BookDto = {
@@ -25,19 +26,8 @@ export type BookDto = {
   publishedDate: string;
 };
 
-export type BookDtoPopulated = Omit<BookDto, 'authors' | 'genres'> & {
-  authors: AuthorType[];
-  genres: GenreType[];
-};
-
 export interface BookFilters {
   title: string;
   author: string;
   genre: string;
-}
-
-export interface BookFiltersPopulated {
-  title: string;
-  author: AuthorType | null;
-  genre: GenreType | null;
 }

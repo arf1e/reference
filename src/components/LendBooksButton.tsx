@@ -10,6 +10,7 @@ import { RootState } from '../slices';
 import { selectBooksInCart } from '../slices/cartSlice';
 import { ApiResponse } from '../types/api';
 import handleAsyncOperation from '../utils/handleAsyncOperation';
+import LoadingButton from './LoadingButton';
 
 type Props = {
   onLend: () => void;
@@ -17,47 +18,19 @@ type Props = {
 
 const STATE_LOADING = 'LOADING';
 const STATE_IDLE = 'IDLE';
-const STATE_NO_AUTH = 'NO_AUTH';
 
-type ButtonState =
-  | typeof STATE_LOADING
-  | typeof STATE_IDLE
-  | typeof STATE_NO_AUTH;
+type ButtonState = typeof STATE_LOADING | typeof STATE_IDLE;
 
 export default function LendBooksButton({ onLend }: Props) {
-  const [state, setState] = useState<ButtonState>(STATE_LOADING);
-  const { isLoading: isAuthLoading, user, jwt } = useAuth();
+  const [state, setState] = useState<ButtonState>(STATE_IDLE);
+  const { user, jwt } = useAuth();
   const books = useSelector((state: RootState) =>
     selectBooksInCart(state.cart)
   );
   const [lendBooks] = useLendBooksMutation();
-  const { showInfoMessage } = useToaster();
+  const { showInfoMessage, showErrorMessage } = useToaster();
 
-  useEffect(() => {
-    if (isAuthLoading) {
-      setState(STATE_LOADING);
-      return;
-    }
-
-    if (!user || !jwt) {
-      setState(STATE_NO_AUTH);
-      return;
-    }
-
-    setState(STATE_IDLE);
-  });
-
-  const startIcon = useMemo(
-    () =>
-      state === STATE_LOADING ? (
-        <CircularProgress size={24} color="primary" />
-      ) : (
-        <UpcomingOutlined />
-      ),
-    [state]
-  );
-
-  if (!jwt || !user) {
+  if (!user || !jwt) {
     return null;
   }
 
@@ -72,10 +45,11 @@ export default function LendBooksButton({ onLend }: Props) {
 
   const onLendBooksError = (error: string) => {
     setState(STATE_IDLE);
-    console.error(error);
+    showErrorMessage(error);
   };
 
   const handleLendBooks = async () => {
+    setState(STATE_LOADING);
     const bookIds = books.map((book) => book._id);
     await handleAsyncOperation(
       () => lendBooks({ userId: user._id, bookIds, accessToken: jwt }),
@@ -89,13 +63,13 @@ export default function LendBooksButton({ onLend }: Props) {
   };
 
   return (
-    <Button
+    <LoadingButton
       variant="contained"
-      disabled={state === STATE_LOADING}
-      startIcon={startIcon}
+      loading={state === STATE_LOADING}
+      startIcon={<UpcomingOutlined />}
       onClick={handleLendBooks}
     >
       Lend {books.length} {pluralize('book', books.length)}
-    </Button>
+    </LoadingButton>
   );
 }

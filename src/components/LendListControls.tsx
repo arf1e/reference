@@ -2,7 +2,7 @@ import {
   PlaylistAddOutlined,
   PlaylistRemoveOutlined,
 } from '@mui/icons-material';
-import { Box, BoxProps, Button } from '@mui/material';
+import { Box, BoxProps, Button, ButtonOwnProps } from '@mui/material';
 import { MouseEvent } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AppDispatch, RootState } from '../slices';
@@ -11,9 +11,14 @@ import { BookType } from '../types/books';
 
 type Props = {
   book: BookType;
+  variant?: ButtonOwnProps['variant'];
 } & BoxProps;
 
-export default function LendListControls({ book, ...boxProps }: Props) {
+export default function LendListControls({
+  book,
+  variant = 'text',
+  ...boxProps
+}: Props) {
   const dispatch = useDispatch<AppDispatch>();
   const isBookInList = useSelector((state: RootState) =>
     selectBookEntry(state.cart, book._id)
@@ -37,8 +42,8 @@ export default function LendListControls({ book, ...boxProps }: Props) {
     <Box {...boxProps}>
       {isBookInList ? (
         <Button
-          variant="text"
-          color="error"
+          variant={variant}
+          color="secondary"
           onClick={handleRemove}
           startIcon={<PlaylistRemoveOutlined />}
         >
@@ -46,7 +51,7 @@ export default function LendListControls({ book, ...boxProps }: Props) {
         </Button>
       ) : (
         <Button
-          variant="text"
+          variant={variant}
           onClick={handleAdd}
           startIcon={<PlaylistAddOutlined />}
         >

@@ -137,10 +137,10 @@ export const libraryApi = createApi({
     }),
     updateBook: builder.mutation<
       ApiResponse<BookType>,
-      { accessToken: string; book: BookDto }
+      { accessToken: string; book: BookDto; isbn: string }
     >({
-      query: ({ accessToken, book }) => ({
-        url: `/books/${book.isbn}`,
+      query: ({ accessToken, book, isbn }) => ({
+        url: `/books/${isbn}`,
         method: 'PUT',
         body: book,
         headers: {
@@ -149,6 +149,20 @@ export const libraryApi = createApi({
       }),
       invalidatesTags: (result, _error, { book }) =>
         result ? [{ type: 'Book', id: book.isbn }] : [],
+    }),
+    deleteBook: builder.mutation<
+      void,
+      { accessToken: string; isbn: string; id: string }
+    >({
+      query: ({ accessToken, isbn }) => ({
+        url: `/books/${isbn}`,
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }),
+      invalidatesTags: (_result, error, args) =>
+        error ? [] : [{ type: 'Book', id: args.id }],
     }),
   }),
 });
@@ -166,4 +180,5 @@ export const {
   useUpdateBookMutation,
   useGetAuthorByIdQuery,
   useGetGenreByIdQuery,
+  useDeleteBookMutation,
 } = libraryApi;

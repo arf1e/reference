@@ -33,7 +33,7 @@ const router = createBrowserRouter([
         ),
       },
       {
-        path: 'books/create',
+        path: 'books/new',
         element: (
           <AuthGate
             needsAdminRights

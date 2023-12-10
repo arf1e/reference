@@ -1,10 +1,11 @@
+import { FilterListOutlined } from '@mui/icons-material';
 import { Box, Button, Grid, TextField, useTheme } from '@mui/material';
 import { Formik } from 'formik';
 import _ from 'lodash';
 import { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from '../slices';
-import { clearFilters, setFilters } from '../slices/booksSlice';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from '../slices';
+import { selectFilters, setFilters } from '../slices/booksSlice';
 import { BookFilters } from '../types/books';
 import composeBackgroundColor from '../utils/composeBackgroundColor';
 import {
@@ -24,12 +25,14 @@ export default function BooksFilters() {
   const [authorInput, setAuthorInput] = useState('');
   const [genreInput, setGenreInput] = useState('');
 
+  const filters = useSelector((state: RootState) => selectFilters(state.books));
+
   const applyFilters = (filters: BookFilters) => {
     dispatch(setFilters(filters));
   };
 
   const resetFilters = () => {
-    dispatch(clearFilters());
+    dispatch(setFilters(filtersDefaultValues));
   };
 
   return (
@@ -43,7 +46,7 @@ export default function BooksFilters() {
       }}
     >
       <Formik
-        initialValues={filtersDefaultValues}
+        initialValues={{ ...filtersDefaultValues, ...filters }}
         onSubmit={applyFilters}
         onReset={resetFilters}
       >
@@ -83,7 +86,9 @@ export default function BooksFilters() {
                   onChooseElement={(author) => {
                     formikProps.setFieldValue('author', author._id);
                   }}
-                  onDeleteValue={() => formikProps.setFieldValue('author', '')}
+                  onDeleteValue={() => {
+                    formikProps.setFieldValue('author', '');
+                  }}
                   title="Author"
                   label={
                     formikProps.values.author
@@ -116,8 +121,17 @@ export default function BooksFilters() {
               </Grid>
             </Grid>
             <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
-              <Button type="submit">Search</Button>
-              <Button type="reset" variant="text" color="error">
+              <Button type="submit" startIcon={<FilterListOutlined />}>
+                Apply filters
+              </Button>
+              <Button
+                type="reset"
+                variant="text"
+                color="error"
+                onClick={() => {
+                  formikProps.resetForm({ values: filtersDefaultValues });
+                }}
+              >
                 Clear
               </Button>
             </Box>

@@ -97,9 +97,9 @@ export default function ProfileInfo({ user }: Props) {
             justifyContent: 'flex-start',
           }}
         >
-          <Typography variant="overline">Email</Typography>
+          <Typography variant="caption">Email</Typography>
           <Typography variant="body1">{user.email}</Typography>
-          <Typography variant="overline" sx={{ mt: 1 }}>
+          <Typography variant="caption" sx={{ mt: 1 }}>
             Role
           </Typography>
           <Typography variant="body1">{user.role.toLowerCase()}</Typography>

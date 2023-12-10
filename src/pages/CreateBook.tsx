@@ -9,9 +9,8 @@ import { BookDto } from '../types/books';
 export default function CreateBook() {
   const { jwt } = useAuth();
   const [createBook] = useCreateBookMutation();
-  const handleCreateBook = async (book: BookDto) => {
-    await createBook({ accessToken: jwt || '', book });
-  };
+  const handleCreateBook = async (book: BookDto) =>
+    createBook({ accessToken: jwt || '', book });
   return (
     <Box>
       <Container>

@@ -17,9 +17,7 @@ export default function Book() {
       />
       {isFetching && <CircularProgress size={20} />}
       {getBookByIsbnResponse?.data && (
-        <>
-          <BookData book={getBookByIsbnResponse.data} />
-        </>
+        <BookData book={getBookByIsbnResponse.data} />
       )}
     </Box>
   );

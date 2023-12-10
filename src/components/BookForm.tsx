@@ -46,7 +46,7 @@ const validationSchema = yup.object({
 
 const convertBookToFormValues = (book: BookType) => {
   const output = {
-    ...book,
+    ..._.omit(book, ['_id']),
     authors: book.authors.map(({ _id }) => _id),
     genres: book.genres.map(({ _id }) => _id),
     publishedDate: dayjs(book.publishedDate).format('YYYY-MM-DD'),

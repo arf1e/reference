@@ -14,7 +14,7 @@ export default function EditBook() {
   const [updateBook] = useUpdateBookMutation();
 
   const handleUpdateBook = async (book: BookDto) =>
-    updateBook({ accessToken: jwt || '', book });
+    updateBook({ accessToken: jwt || '', book, isbn });
   return (
     <Box>
       <Container>
