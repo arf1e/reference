@@ -2,7 +2,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { API_URL } from '../config/api';
 import { ApiResponse, PaginationInput, WithPagination } from '../types/api';
 import { JwtResponse, LoginInput, SignupInput } from '../types/auth';
-import { BookFilters, BookType } from '../types/books';
+import { BookDto, BookFilters, BookType } from '../types/books';
 import { UserType } from '../types/users';
 
 export const libraryApi = createApi({
@@ -106,6 +106,34 @@ export const libraryApi = createApi({
             ]
           : [],
     }),
+    createBook: builder.mutation<
+      ApiResponse<BookType>,
+      { accessToken: string; book: BookDto }
+    >({
+      query: ({ accessToken, book }) => ({
+        url: '/books',
+        method: 'POST',
+        body: book,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }),
+    }),
+    updateBook: builder.mutation<
+      ApiResponse<BookType>,
+      { accessToken: string; book: BookDto }
+    >({
+      query: ({ accessToken, book }) => ({
+        url: `/books/${book.isbn}`,
+        method: 'PUT',
+        body: book,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }),
+      invalidatesTags: (result, _error, { book }) =>
+        result ? [{ type: 'Book', id: book.isbn }] : [],
+    }),
   }),
 });
 
@@ -118,4 +146,6 @@ export const {
   useLazyGetMyProfileQuery,
   useLendBooksMutation,
   useReturnBooksMutation,
+  useCreateBookMutation,
+  useUpdateBookMutation,
 } = libraryApi;

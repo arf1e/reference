@@ -2,16 +2,16 @@ import { DeleteOutline } from '@mui/icons-material';
 import { Box, IconButton } from '@mui/material';
 
 type Props = {
-  file: File;
+  url: string;
   size: number;
   onRemove: () => void;
 };
 
-export default function ImagePreview({ file, size, onRemove }: Props) {
+export default function ImagePreview({ url, size, onRemove }: Props) {
   return (
     <Box sx={{ width: size, height: size, position: 'relative' }}>
       <img
-        src={URL.createObjectURL(file)}
+        src={url}
         alt="avatar"
         style={{
           width: '100%',

@@ -1,5 +1,4 @@
-import { Box, Container } from '@mui/material';
-import Heading from '../styles/styled/Heading';
+import { Box, Container, Typography } from '@mui/material';
 import BooksFilters from './BooksFilters';
 import BooksList from './BooksList';
 
@@ -12,9 +11,9 @@ export default function Books() {
       }}
     >
       <Container>
-        <Heading variant="h5" component="h2">
+        <Typography variant="h4" component="h2">
           Books
-        </Heading>
+        </Typography>
         <Box>
           <BooksFilters />
           <BooksList />

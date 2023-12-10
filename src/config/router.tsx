@@ -3,8 +3,9 @@ import AuthGate from '../components/AuthGate';
 import RootLayout from '../components/RootLayout';
 import Auth from '../pages/Auth';
 import Book from '../pages/Book';
+import CreateBook from '../pages/CreateBook';
+import EditBook from '../pages/EditBook';
 import Index from '../pages/Index';
-import Playground from '../pages/Playground';
 import Profile from '../pages/Profile';
 
 const router = createBrowserRouter([
@@ -21,6 +22,28 @@ const router = createBrowserRouter([
         element: <Book />,
       },
       {
+        path: 'books/:isbn/edit',
+        element: (
+          <AuthGate
+            needsAdminRights
+            accessDeniedMessage="You need to be an admin to edit a book"
+          >
+            <EditBook />
+          </AuthGate>
+        ),
+      },
+      {
+        path: 'books/create',
+        element: (
+          <AuthGate
+            needsAdminRights
+            accessDeniedMessage="You need to be an admin to create a book"
+          >
+            <CreateBook />
+          </AuthGate>
+        ),
+      },
+      {
         path: 'auth',
         element: <Auth />,
       },
@@ -31,10 +54,6 @@ const router = createBrowserRouter([
             <Profile />
           </AuthGate>
         ),
-      },
-      {
-        path: 'pg',
-        element: <Playground />,
       },
     ],
   },

@@ -31,7 +31,7 @@ export default function LendBooksButton({ onLend }: Props) {
     selectBooksInCart(state.cart)
   );
   const [lendBooks] = useLendBooksMutation();
-  const { showSuccessMessage } = useToaster();
+  const { showInfoMessage } = useToaster();
 
   useEffect(() => {
     if (isAuthLoading) {
@@ -66,9 +66,7 @@ export default function LendBooksButton({ onLend }: Props) {
   ) => {
     setState(STATE_IDLE);
     const booksQty = result.data.data.borrowedBooks.length;
-    showSuccessMessage(
-      `Successfully borrowed ${booksQty} ${pluralize('book', booksQty)}`
-    );
+    showInfoMessage(`${booksQty} ${pluralize('book', booksQty)} borrowed`);
     onLend();
   };
 

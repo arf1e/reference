@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import { BookType } from '../types/books';
 import composeBackgroundColor from '../utils/composeBackgroundColor';
+import composeHoverBackgroundColor from '../utils/composeHoverBackgroundColor';
 import LendListControls from './LendListControls';
 
 type Props = {
@@ -21,10 +22,22 @@ export default function BookCard({ book }: Props) {
             color: theme.palette.text.primary,
             p: 2,
             borderRadius: 2,
+            transition: '0.3s',
             backgroundColor: composeBackgroundColor(theme, 1),
+            '&:hover': {
+              backgroundColor: composeHoverBackgroundColor(theme, 1),
+              '& img': {
+                transform: 'scale(0.97)',
+              },
+            },
           }}
         >
-          <img src={book.image} alt={book.title} width="100%" />
+          <img
+            src={book.image}
+            alt={book.title}
+            width="100%"
+            style={{ transition: '0.3s' }}
+          />
           <Typography
             variant="subtitle2"
             component="h4"
@@ -38,7 +51,7 @@ export default function BookCard({ book }: Props) {
           <Typography variant="caption" component="p">
             {book.genres.map((genre) => genre.title).join(', ')}
           </Typography>
-          {user && <LendListControls book={book} />}
+          {user && <LendListControls book={book} sx={{ mt: 2 }} />}
         </Box>
       </Link>
     </Grid>

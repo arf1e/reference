@@ -25,6 +25,11 @@ export type BookDto = {
   publishedDate: string;
 };
 
+export type BookDtoPopulated = Omit<BookDto, 'authors' | 'genres'> & {
+  authors: AuthorType[];
+  genres: GenreType[];
+};
+
 export interface BookFilters {
   title: string;
   author: string;

@@ -1,4 +1,6 @@
 import { CssBaseline, ThemeProvider } from '@mui/material';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers';
 import { useMemo } from 'react';
 import { RouterProvider } from 'react-router-dom';
 import CartOverlayContextProvider from './components/CartOverlayContextProvider';
@@ -11,14 +13,16 @@ function App() {
   const { colorMode } = useColorMode();
   const theme = useMemo(() => composeTheme(colorMode), [colorMode]);
   return (
-    <ThemeProvider theme={theme}>
-      <CssBaseline />
-      <ToasterContextProvider>
-        <CartOverlayContextProvider>
-          <RouterProvider router={router} />
-        </CartOverlayContextProvider>
-      </ToasterContextProvider>
-    </ThemeProvider>
+    <LocalizationProvider dateAdapter={AdapterDayjs}>
+      <ThemeProvider theme={theme}>
+        <CssBaseline />
+        <ToasterContextProvider>
+          <CartOverlayContextProvider>
+            <RouterProvider router={router} />
+          </CartOverlayContextProvider>
+        </ToasterContextProvider>
+      </ThemeProvider>
+    </LocalizationProvider>
   );
 }
 

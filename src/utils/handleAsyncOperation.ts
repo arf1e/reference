@@ -23,7 +23,8 @@ export default async function handleAsyncOperation(
   }: InputHelpersType
 ) {
   try {
-    const result = await submitFn();
+    const result = await submitFn().catch(alert);
+    console.log('handleAsyncOperation result', result);
     if (_.has(result, 'error')) {
       const error = _.get(
         result,
@@ -35,6 +36,7 @@ export default async function handleAsyncOperation(
     }
     onSuccess(result);
   } catch (error: any) {
+    console.log('handleAsyncOperation error', error);
     const errorMsg = _.get(error, 'message', fallbackErrorMsg);
     onError(errorMsg);
   }

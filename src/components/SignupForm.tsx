@@ -1,9 +1,7 @@
-import { DeleteOutline } from '@mui/icons-material';
 import {
   Box,
   Button,
   Grid,
-  IconButton,
   TextField,
   Typography,
   useTheme,
@@ -74,7 +72,6 @@ export default function SignupForm({ switchToLogin }: Props) {
     const { imageFile } = values;
     const image = await handleFileUpload(imageFile as File);
     const valuesToSubmit = _.omit(values, ['imageFile']);
-    console.log('valuesToSubmit', valuesToSubmit);
     await handleAsyncOperation(() => signup({ ...valuesToSubmit, image }), {
       onSuccess: handleSignupSuccess,
       onError: handleSignupError,
@@ -189,7 +186,9 @@ export default function SignupForm({ switchToLogin }: Props) {
               )}
               {formikProps.values.imageFile && (
                 <ImagePreview
-                  file={formikProps.values.imageFile as File}
+                  url={URL.createObjectURL(
+                    formikProps.values.imageFile as File
+                  )}
                   size={200}
                   onRemove={() => handleRemoveImage(formikProps)}
                 />

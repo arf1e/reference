@@ -1,6 +1,7 @@
 import { Box, Container } from '@mui/material';
 import { useSelector } from 'react-redux';
 import { useGetMyProfileQuery } from '../api/library';
+import Meta from '../components/Meta';
 import ProfileInfo from '../components/ProfileInfo';
 import { RootState } from '../slices';
 import { selectJwt } from '../slices/authSlice';
@@ -22,6 +23,7 @@ export default function Profile() {
   return (
     <Box>
       <Container>
+        <Meta pageTitle={profileData.data.firstName} />
         <ProfileInfo
           user={profileData.data}
           onEdit={() => console.log('Edit!')}

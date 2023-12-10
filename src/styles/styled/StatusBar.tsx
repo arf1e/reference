@@ -18,6 +18,15 @@ export default styled(Box)<{ state: UseFormStateType }>`
   transition: 0.2s;
   height: ${({ state }) => (state === FORM_IDLE ? '0' : '2em')};
   opacity: ${({ state }) => (state === FORM_IDLE ? '0' : '1')};
+  color: ${({ theme, state }) => {
+    const color = {
+      [FORM_IDLE]: 'transparent',
+      [FORM_LOADING]: theme.palette.text.primary,
+      [FORM_SUCCESS]: 'white',
+      [FORM_ERROR]: 'white',
+    }[state];
+    return color;
+  }};
   background-color: ${({ theme, state }) => {
     const color = {
       [FORM_IDLE]: 'transparent',

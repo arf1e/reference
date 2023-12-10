@@ -10,12 +10,14 @@ type Props = {
   accept?: string;
 } & BoxProps;
 
+const regularImageMimeTypes = ['image/jpeg', 'image/png'];
+
 export default function FileInput({
   label,
   name,
   onFile,
   icon = <ImageOutlined />,
-  accept = 'image/*',
+  accept = regularImageMimeTypes.join(', '),
   ...boxProps
 }: Props) {
   const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {

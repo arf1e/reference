@@ -1,4 +1,4 @@
-import { ClearOutlined, UpcomingOutlined } from '@mui/icons-material';
+import { ClearOutlined } from '@mui/icons-material';
 import { Box, Button, Collapse, Divider } from '@mui/material';
 import { useDispatch } from 'react-redux';
 import { TransitionGroup } from 'react-transition-group';
