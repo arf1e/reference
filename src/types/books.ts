@@ -35,3 +35,9 @@ export interface BookFilters {
   author: string;
   genre: string;
 }
+
+export interface BookFiltersPopulated {
+  title: string;
+  author: AuthorType | null;
+  genre: GenreType | null;
+}

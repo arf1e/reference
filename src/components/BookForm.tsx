@@ -1,4 +1,4 @@
-import { BookDto, BookDtoPopulated, BookType } from '../types/books';
+import { BookDto, BookType } from '../types/books';
 import * as yup from 'yup';
 import { Formik, FormikProps } from 'formik';
 import {
@@ -21,29 +21,35 @@ import ImagePreview from './ImagePreview';
 import handleFileUpload from '../api/handleFileUpload';
 import handleAsyncOperation from '../utils/handleAsyncOperation';
 import { useState } from 'react';
-import { AuthorsAutocomplete, GenresAutocomplete } from './AutocompleteInput';
+import {
+  AuthorsAutocompleteInput,
+  GenresAutocompleteInput,
+} from './AutocompleteInput';
 
 type Props = {
   providedValues?: BookType;
-  onSubmit: (book: BookDto) => Promise<void>;
+  onSubmit: (book: BookDto) => Promise<any>;
   successMessage: string;
 };
 
-type FormType = WithImageFile<BookDtoPopulated>;
+type FormType = WithImageFile<BookDto>;
 
 const validationSchema = yup.object({
   title: yup.string().required(),
   isbn: yup.string().required().min(7).max(13),
   publisher: yup.string().required(),
   image: yup.string(),
-  authors: yup.array().of(yup.object().required()).required(),
-  genres: yup.array().of(yup.object().required()).required(),
-  publishedDate: yup.date().required(),
+  authors: yup.array().of(yup.string().required()).min(1).required(),
+  genres: yup.array().of(yup.string().required()).min(1).required(),
+  publishedDate: yup.string().required(),
 });
 
 const convertBookToFormValues = (book: BookType) => {
   const output = {
     ...book,
+    authors: book.authors.map(({ _id }) => _id),
+    genres: book.genres.map(({ _id }) => _id),
+    publishedDate: dayjs(book.publishedDate).format('YYYY-MM-DD'),
     imageFile: null,
   };
   return output;
@@ -110,11 +116,7 @@ export default function BookForm({
         return;
       }
     }
-    const valuesToSubmit = {
-      ..._.omit(values, ['imageFile']),
-      authors: values.authors.map((author) => author._id),
-      genres: values.genres.map((genre) => genre._id),
-    };
+    const valuesToSubmit = _.omit(values, ['imageFile']);
     await handleAsyncOperation(() => onSubmit(valuesToSubmit), {
       onSuccess: () => {
         setFormState('SUCCESS');
@@ -173,11 +175,11 @@ export default function BookForm({
                 />
               </Grid>
               <Grid item xs={12}>
-                <AuthorsAutocomplete
+                <AuthorsAutocompleteInput
                   onChooseElement={(author) => {
                     formikProps.setFieldValue('authors', [
                       ...formikProps.values.authors,
-                      author,
+                      author._id,
                     ]);
                   }}
                   onDeleteValue={(author) =>
@@ -186,24 +188,20 @@ export default function BookForm({
                       _.without(formikProps.values.authors, author)
                     )
                   }
-                  valueExtractor={(value) => value.name}
                   title="Authors"
-                  endpoint="/authors"
                   label="Add author"
                   placeholder="Search for an author"
-                  queryParam="name"
                   inputValue={authorInput}
-                  suggestionsExtractor={(res) => res.data.authors}
                   onInputChange={setAuthorInput}
                   selectedValues={formikProps.values.authors}
                 />
               </Grid>
               <Grid item xs={12}>
-                <GenresAutocomplete
+                <GenresAutocompleteInput
                   onChooseElement={(genre) => {
                     formikProps.setFieldValue('genres', [
                       ...formikProps.values.genres,
-                      genre,
+                      genre._id,
                     ]);
                   }}
                   onDeleteValue={(genre) =>
@@ -212,14 +210,10 @@ export default function BookForm({
                       _.without(formikProps.values.genres, genre)
                     )
                   }
-                  valueExtractor={(value) => value.title}
                   title="Genres"
-                  endpoint="/genres"
                   label="Add genre"
                   placeholder="Search for a genre"
-                  queryParam="title"
                   inputValue={genreInput}
-                  suggestionsExtractor={(res) => res.data.genres}
                   onInputChange={setGenreInput}
                   selectedValues={formikProps.values.genres}
                 />
@@ -267,7 +261,7 @@ export default function BookForm({
             )}
             {hasCover(formikProps.values) && (
               <ImagePreview
-                size={200}
+                size={100}
                 url={coverUrl(formikProps.values)}
                 onRemove={() => handleClearCover(formikProps)}
               />
@@ -275,8 +269,9 @@ export default function BookForm({
             <Button
               type="submit"
               variant="contained"
-              sx={{ mt: 2 }}
-              disabled={formState === 'LOADING'}
+              sx={{ my: 2 }}
+              fullWidth
+              disabled={formState === 'LOADING' || !formikProps.isValid}
             >
               {providedValues ? 'Update' : 'Add'}
             </Button>

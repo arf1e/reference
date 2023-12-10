@@ -13,9 +13,8 @@ export default function EditBook() {
   const { data: getBookByIsbnResponse } = useGetBookByIsbnQuery(isbn);
   const [updateBook] = useUpdateBookMutation();
 
-  const handleUpdateBook = async (book: BookDto) => {
-    await updateBook({ accessToken: jwt || '', book });
-  };
+  const handleUpdateBook = async (book: BookDto) =>
+    updateBook({ accessToken: jwt || '', book });
   return (
     <Box>
       <Container>

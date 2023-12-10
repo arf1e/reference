@@ -1,6 +1,7 @@
 import { Box, Container, Grid } from '@mui/material';
 import { useState } from 'react';
 import LoginForm from '../components/LoginForm';
+import Meta from '../components/Meta';
 import SignupForm from '../components/SignupForm';
 import Heading from '../styles/styled/Heading';
 
@@ -13,6 +14,7 @@ export default function Auth() {
   const [displayedForm, setDisplayedForm] = useState<FormType>(LOGIN_FORM);
   return (
     <Box>
+      <Meta pageTitle="Auth" />
       <Container>
         <Box sx={{ display: 'flex', justifyContent: 'center', mt: 8, mb: 2 }}>
           <Heading variant="h2" sx={{ alignSelf: 'center', mb: 4 }}>

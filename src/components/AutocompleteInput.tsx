@@ -1,6 +1,5 @@
 import {
   Box,
-  Chip,
   CircularProgress,
   Collapse,
   ListItem,
@@ -8,10 +7,9 @@ import {
   TextField,
   TextFieldProps,
   Typography,
-  useTheme,
 } from '@mui/material';
 import _ from 'lodash';
-import { useEffect, useState } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { TransitionGroup } from 'react-transition-group';
 import { API_URL } from '../config/api';
 import useDebouncedValue from '../hooks/useDebouncedValue';
@@ -19,18 +17,22 @@ import AutocompleteSuggestionsContainer from '../styles/styled/AutocompleteSugge
 import { ApiResponse, WithPagination } from '../types/api';
 import { AuthorType } from '../types/authors';
 import { GenreType } from '../types/genres';
+import {
+  AuthorAutocompleteChip,
+  GenreAutocompleteChip,
+} from './AutocompleteChip';
 
 type Props<Element extends { _id: string }, ResponseFormat> = {
   inputValue: string;
   onInputChange: (value: string) => void;
-  selectedValues: Element[];
+  selectedValues: string[];
   onChooseElement: (element: Element) => void;
-  onDeleteValue: (element: Element) => void;
   valueExtractor: (element: Element) => string;
   endpoint: string;
   queryParam: string;
   suggestionsExtractor: (response: ResponseFormat) => Element[];
   title: string;
+  renderChip: (id: string) => ReactNode;
 } & TextFieldProps;
 
 const SUGGESTIONS_IDLE = 'SUGGESTIONS_IDLE';
@@ -60,9 +62,9 @@ export default function AutocompleteInput<
   suggestionsExtractor,
   endpoint,
   queryParam,
-  onDeleteValue,
   title,
   valueExtractor,
+  renderChip,
   ...textFieldProps
 }: Props<Entity, Response>) {
   const [query, resetQuery] = useDebouncedValue(inputValue, 300);
@@ -129,13 +131,8 @@ export default function AutocompleteInput<
       >
         <TransitionGroup component={null}>
           {selectedValues.map((value) => (
-            <Collapse key={value._id} orientation="horizontal">
-              <Chip
-                key={value._id}
-                label={valueExtractor(value)}
-                variant="outlined"
-                onDelete={() => onDeleteValue(value)}
-              />
+            <Collapse key={value} orientation="horizontal">
+              {renderChip(value)}
             </Collapse>
           ))}
         </TransitionGroup>
@@ -161,10 +158,7 @@ export default function AutocompleteInput<
             {suggestions.map((suggestion) => (
               <ListItemButton
                 key={suggestion._id}
-                disabled={_.includes(
-                  selectedValues.map((elt) => elt._id),
-                  suggestion._id
-                )}
+                disabled={_.includes(selectedValues, suggestion._id)}
                 onClick={() => handleSelectSuggestion(suggestion)}
               >
                 <Typography variant="body2">
@@ -186,12 +180,65 @@ export default function AutocompleteInput<
   );
 }
 
-export const AuthorsAutocomplete = AutocompleteInput<
-  AuthorType,
-  ApiResponse<WithPagination<{ authors: AuthorType[] }>>
->;
+type AutocompleteInputProps<Element extends { _id: string }, Response> = Omit<
+  Props<Element, Response>,
+  | 'endpoint'
+  | 'valueExtractor'
+  | 'queryParam'
+  | 'suggestionsExtractor'
+  | 'renderChip'
+> & {
+  onDeleteValue: (id: string) => void;
+};
 
-export const GenresAutocomplete = AutocompleteInput<
-  GenreType,
-  ApiResponse<WithPagination<{ genres: GenreType[] }>>
->;
+export function AuthorsAutocompleteInput(
+  props: AutocompleteInputProps<
+    AuthorType,
+    ApiResponse<WithPagination<{ authors: AuthorType[] }>>
+  >
+) {
+  return (
+    <AutocompleteInput<
+      AuthorType,
+      ApiResponse<WithPagination<{ authors: AuthorType[] }>>
+    >
+      {..._.omit(props, ['onDeleteValue'])}
+      endpoint="/authors"
+      valueExtractor={(author) => author.name}
+      queryParam="name"
+      suggestionsExtractor={(res) => res.data.authors}
+      renderChip={(id) => (
+        <AuthorAutocompleteChip
+          id={id}
+          onDelete={() => props.onDeleteValue(id)}
+        />
+      )}
+    />
+  );
+}
+
+export function GenresAutocompleteInput(
+  props: AutocompleteInputProps<
+    GenreType,
+    ApiResponse<WithPagination<{ genres: GenreType }>>
+  >
+) {
+  return (
+    <AutocompleteInput<
+      GenreType,
+      ApiResponse<WithPagination<{ genres: GenreType[] }>>
+    >
+      {..._.omit(props, ['onDeleteValue'])}
+      endpoint="/genres"
+      valueExtractor={(genre) => genre.title}
+      queryParam="title"
+      suggestionsExtractor={(res) => res.data.genres}
+      renderChip={(id) => (
+        <GenreAutocompleteChip
+          id={id}
+          onDelete={() => props.onDeleteValue(id)}
+        />
+      )}
+    />
+  );
+}

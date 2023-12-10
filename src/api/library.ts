@@ -2,7 +2,9 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { API_URL } from '../config/api';
 import { ApiResponse, PaginationInput, WithPagination } from '../types/api';
 import { JwtResponse, LoginInput, SignupInput } from '../types/auth';
+import { AuthorType } from '../types/authors';
 import { BookDto, BookFilters, BookType } from '../types/books';
+import { GenreType } from '../types/genres';
 import { UserType } from '../types/users';
 
 export const libraryApi = createApi({
@@ -34,6 +36,20 @@ export const libraryApi = createApi({
       }),
       providesTags: (result) =>
         result ? [{ type: 'Book', id: result.data._id }] : [],
+    }),
+    getAuthorById: builder.query<ApiResponse<AuthorType>, string>({
+      query: (id) => ({
+        url: `/authors/${id}`,
+      }),
+      providesTags: (result) =>
+        result ? [{ type: 'Author', id: result.data._id }] : [],
+    }),
+    getGenreById: builder.query<ApiResponse<GenreType>, string>({
+      query: (id) => ({
+        url: `/genres/${id}`,
+      }),
+      providesTags: (result) =>
+        result ? [{ type: 'Genre', id: result.data._id }] : [],
     }),
     login: builder.mutation<ApiResponse<JwtResponse>, LoginInput>({
       query: (credentials) => ({
@@ -148,4 +164,6 @@ export const {
   useReturnBooksMutation,
   useCreateBookMutation,
   useUpdateBookMutation,
+  useGetAuthorByIdQuery,
+  useGetGenreByIdQuery,
 } = libraryApi;
