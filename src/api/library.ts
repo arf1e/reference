@@ -147,8 +147,8 @@ export const libraryApi = createApi({
           Authorization: `Bearer ${accessToken}`,
         },
       }),
-      invalidatesTags: (result, _error, { book }) =>
-        result ? [{ type: 'Book', id: book.isbn }] : [],
+      invalidatesTags: (result, _error) =>
+        result ? [{ type: 'Book', id: result.data._id }] : [],
     }),
     deleteBook: builder.mutation<
       void,

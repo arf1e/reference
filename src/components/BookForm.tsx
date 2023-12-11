@@ -50,6 +50,10 @@ const convertBookToFormValues = (book: BookType) => {
     authors: book.authors.map(({ _id }) => _id),
     genres: book.genres.map(({ _id }) => _id),
     publishedDate: dayjs(book.publishedDate).format('YYYY-MM-DD'),
+    ...(book.borrowerId && {
+      borrowDate: dayjs(book.borrowDate).format('YYYY-MM-DD'),
+      returnDate: dayjs(book.returnDate).format('YYYY-MM-DD'),
+    }),
     imageFile: null,
   };
   return output;

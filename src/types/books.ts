@@ -14,6 +14,8 @@ export type BookType = {
   status: StatusType;
   publishedDate: string;
   borrowerId?: string;
+  borrowDate?: string;
+  returnDate?: string;
 };
 
 export type BookDto = {

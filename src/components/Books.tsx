@@ -11,7 +11,7 @@ export default function Books() {
       }}
     >
       <Container>
-        <Typography variant="h4" component="h2">
+        <Typography variant="h4" component="h2" id="books">
           Books
         </Typography>
         <Box>

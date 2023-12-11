@@ -1,7 +1,7 @@
 import { DeleteOutlined, EditOutlined } from '@mui/icons-material';
 import { Box, BoxProps, Button, CircularProgress } from '@mui/material';
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { useDeleteBookMutation } from '../api/library';
 import useAuth from '../hooks/useAuth';
 import useToaster from '../hooks/useToaster';
@@ -68,13 +68,10 @@ const DeleteBookBtn = ({
 };
 
 const EditBookBtn = ({ book }: { book: BookType }) => {
-  const navigate = useNavigate();
-
-  const handleBookEdit = () => navigate(`/books/${book.isbn}/edit`);
   return (
-    <Button startIcon={<EditOutlined />} onClick={handleBookEdit}>
-      Edit Book
-    </Button>
+    <Link to={`/books/${book.isbn}/edit`}>
+      <Button startIcon={<EditOutlined />}>Edit Book</Button>
+    </Link>
   );
 };
 

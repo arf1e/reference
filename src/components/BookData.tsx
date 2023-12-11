@@ -1,11 +1,6 @@
-import {
-  Box,
-  Container,
-  Grid,
-  Grow,
-  Typography,
-  useTheme,
-} from '@mui/material';
+import { ChevronLeft } from '@mui/icons-material';
+import { Box, Button, Container, Grid, Grow, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import { BookType } from '../types/books';
 import getPublishedYear from '../utils/getPublishedYear';
@@ -21,8 +16,13 @@ export default function BookData({ book }: Props) {
   const { user } = useAuth();
   return (
     <Grow in={true}>
-      <Container sx={{ my: 10 }}>
+      <Container sx={{ my: 8 }}>
         <Grid container spacing={1}>
+          <Grid item xs={12} mb={1}>
+            <Link to={`/#books`}>
+              <Button startIcon={<ChevronLeft />}>Back to catalog</Button>
+            </Link>
+          </Grid>
           <Grid item xs={12} sm={4}>
             <img
               src={book.image}

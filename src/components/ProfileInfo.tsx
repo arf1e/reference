@@ -124,9 +124,6 @@ export default function ProfileInfo({ user }: Props) {
       </Grid>
       {user.borrowedBooks.length > 0 && (
         <Grid xs={12} item>
-          <Heading variant="h4" component="h2" sx={{ mt: 4 }}>
-            Borrowed books
-          </Heading>
           <BorrowedBooks borrower={user} />
         </Grid>
       )}

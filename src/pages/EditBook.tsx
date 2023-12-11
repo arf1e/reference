@@ -1,5 +1,6 @@
-import { Box, Container, Grid } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import { ChevronLeft } from '@mui/icons-material';
+import { Box, Button, Container, Grid } from '@mui/material';
+import { Link, useParams } from 'react-router-dom';
 import { useGetBookByIsbnQuery, useUpdateBookMutation } from '../api/library';
 import BookForm from '../components/BookForm';
 import Meta from '../components/Meta';
@@ -25,6 +26,13 @@ export default function EditBook() {
               <Heading variant="h3" component="h1" alignSelf="center">
                 Edit book
               </Heading>
+            </Box>
+            <Box sx={{ mb: 1, display: 'flex', justifyContent: 'flex-start' }}>
+              <Link to={`/books/${isbn}`}>
+                <Button startIcon={<ChevronLeft />}>
+                  Go back to the book page
+                </Button>
+              </Link>
             </Box>
             {getBookByIsbnResponse?.data && (
               <BookForm
