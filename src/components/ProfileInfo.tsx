@@ -1,17 +1,5 @@
 import { EditOutlined, LockOutlined } from '@mui/icons-material';
-import {
-  Avatar,
-  Box,
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogContentText,
-  DialogTitle,
-  Grid,
-  Typography,
-  useTheme,
-} from '@mui/material';
+import { Avatar, Box, Button, Grid, Typography, useTheme } from '@mui/material';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
 import useOwnership from '../hooks/useOwnership';
@@ -22,6 +10,7 @@ import Heading from '../styles/styled/Heading';
 import { UserType } from '../types/users';
 import composeBackgroundColor from '../utils/composeBackgroundColor';
 import BorrowedBooks from './BorrowedBooks';
+import ConfirmDestructiveAction from './ConfirmDestuctiveAction';
 
 type Props = {
   user: UserType;
@@ -142,28 +131,15 @@ export default function ProfileInfo({ user }: Props) {
         </Grid>
       )}
       {isOwn && (
-        <Dialog
+        <ConfirmDestructiveAction
           open={alertOpen}
           onClose={closeAlert}
-          aria-labelledby="alert-dialog-title"
-          aria-describedby="alert-dialog-description"
-        >
-          <DialogTitle id="alert-dialog-title">
-            Are you sure you want to logout?
-          </DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              You will be logged out and redirected to the home page. If you
-              have any books in your lending cart, they will be removed.
-            </DialogContentText>
-          </DialogContent>
-          <DialogActions>
-            <Button onClick={closeAlert}>No, take me back</Button>
-            <Button onClick={handleLogout} color="error">
-              Logout
-            </Button>
-          </DialogActions>
-        </Dialog>
+          onConfirm={handleLogout}
+          heading="Are you sure you want to logout?"
+          description="If you have any books in your lending cart, they will be removed."
+          cancelBtnText="No, take me back"
+          confirmBtnText="Logout"
+        />
       )}
     </Grid>
   );

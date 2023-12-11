@@ -1,7 +1,6 @@
 import { UpcomingOutlined } from '@mui/icons-material';
-import { Button, CircularProgress } from '@mui/material';
 import pluralize from 'pluralize';
-import { useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { useLendBooksMutation } from '../api/library';
 import useAuth from '../hooks/useAuth';

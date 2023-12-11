@@ -4,6 +4,7 @@ type InputHelpersType = {
   onSuccess: (result: any) => void;
   onError: (error: string) => void;
   fallbackErrorMsg?: string;
+  expectEmptyResponse?: boolean;
 };
 
 /**
@@ -13,6 +14,7 @@ type InputHelpersType = {
  * @param submitFn - async function to be executed
  * @param onSuccess - callback to be executed in case of success.
  * @param onError - callback to be executed in case of error.
+ * @param expectEmptyResponse - optional param to handle DELETE -> 204 requests
  */
 export default async function handleAsyncOperation(
   submitFn: () => Promise<any>,
@@ -20,12 +22,16 @@ export default async function handleAsyncOperation(
     onSuccess,
     onError,
     fallbackErrorMsg = 'Unknown error happened.',
+    expectEmptyResponse = false,
   }: InputHelpersType
 ) {
   try {
     const result = await submitFn();
     console.log('[handleAsyncOperation]: result', result);
-    if (_.get(result, ['data', 'status'], 'error') === 'error') {
+    if (
+      !expectEmptyResponse &&
+      _.get(result, ['data', 'status'], 'error') === 'error'
+    ) {
       const error = _.get(
         result,
         ['error', 'data', 'message'],

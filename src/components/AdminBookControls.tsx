@@ -1,4 +1,4 @@
-import { DeleteOutlined } from '@mui/icons-material';
+import { DeleteOutlined, EditOutlined } from '@mui/icons-material';
 import { Box, BoxProps, Button, CircularProgress } from '@mui/material';
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
@@ -6,7 +6,9 @@ import { useDeleteBookMutation } from '../api/library';
 import useAuth from '../hooks/useAuth';
 import useToaster from '../hooks/useToaster';
 import { BookType } from '../types/books';
+import handleAsyncOperation from '../utils/handleAsyncOperation';
 import ConfirmDestructiveAction from './ConfirmDestuctiveAction';
+import LoadingButton from './LoadingButton';
 
 type Props = {
   book: BookType;
@@ -27,24 +29,36 @@ const DeleteBookBtn = ({
   const openAlert = () => setIsAlertOpen(true);
   const closeAlert = () => setIsAlertOpen(false);
 
-  const onDeleteSuccess = () => {};
+  const onDeleteSuccess = () => {
+    setIsLoading(false);
+    showInfoMessage(`"${book.title}" has been deleted`);
+    navigate('/');
+  };
+
+  const handleBookDelete = () =>
+    handleAsyncOperation(
+      () => deleteBook({ accessToken, isbn: book.isbn, id: book._id }),
+      {
+        onSuccess: onDeleteSuccess,
+        onError: showErrorMessage,
+        expectEmptyResponse: true,
+      }
+    );
 
   return (
     <>
-      <Button
+      <LoadingButton
+        loading={isLoading}
         onClick={openAlert}
-        disabled={isLoading}
-        startIcon={
-          isLoading ? <CircularProgress size={24} /> : <DeleteOutlined />
-        }
+        startIcon={<DeleteOutlined />}
         color="error"
       >
         Delete book
-      </Button>
+      </LoadingButton>
       <ConfirmDestructiveAction
         open={isAlertOpen}
         onClose={closeAlert}
-        onConfirm={console.log}
+        onConfirm={handleBookDelete}
         heading="Are you sure you want to delete this book?"
         cancelBtnText="Cancel"
         confirmBtnText="Yep, delete it"
@@ -53,14 +67,28 @@ const DeleteBookBtn = ({
   );
 };
 
-const EditBookBtn = {};
+const EditBookBtn = ({ book }: { book: BookType }) => {
+  const navigate = useNavigate();
+
+  const handleBookEdit = () => navigate(`/books/${book.isbn}/edit`);
+  return (
+    <Button startIcon={<EditOutlined />} onClick={handleBookEdit}>
+      Edit Book
+    </Button>
+  );
+};
 
 export default function AdminBookControls({ book, ...boxProps }: Props) {
   const { isAdmin, jwt } = useAuth();
 
+  if (!isAdmin) {
+    return null;
+  }
+
   return (
-    <Box {...boxProps}>
-      {isAdmin && <DeleteBookBtn book={book} accessToken={jwt || ''} />}
+    <Box display="flex" gap={2} {...boxProps}>
+      <DeleteBookBtn book={book} accessToken={jwt || ''} />
+      <EditBookBtn book={book} />
     </Box>
   );
 }
