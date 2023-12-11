@@ -16,7 +16,6 @@ import ConfirmDestructiveAction from './ConfirmDestuctiveAction';
 
 type Props = {
   user: UserType;
-  onEdit: () => void;
 };
 
 const PROFILE_IMAGE_SIZE = 150;
@@ -102,9 +101,11 @@ export default function ProfileInfo({ user }: Props) {
             }}
           >
             {(isOwn || isAdmin) && (
-              <Button variant="text" startIcon={<EditOutlined />}>
-                Edit Profile
-              </Button>
+              <Link to={`/users/${user._id}/edit`}>
+                <Button variant="text" startIcon={<EditOutlined />}>
+                  Edit Profile
+                </Button>
+              </Link>
             )}
             {isOwn && (
               <>

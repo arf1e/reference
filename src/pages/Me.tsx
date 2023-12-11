@@ -6,7 +6,7 @@ import ProfileInfo from '../components/ProfileInfo';
 import { RootState } from '../slices';
 import { selectJwt } from '../slices/authSlice';
 
-export default function Profile() {
+export default function Me() {
   const accessToken = useSelector((state: RootState) => selectJwt(state.auth));
   const { data: profileData, isLoading } = useGetMyProfileQuery(
     accessToken as string
@@ -24,10 +24,7 @@ export default function Profile() {
     <Box>
       <Container>
         <Meta pageTitle={profileData.data.firstName} />
-        <ProfileInfo
-          user={profileData.data}
-          onEdit={() => console.log('Edit!')}
-        />
+        <ProfileInfo user={profileData.data} />
       </Container>
     </Box>
   );

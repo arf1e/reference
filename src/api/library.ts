@@ -10,7 +10,7 @@ import {
 import { AuthorType } from '../types/authors';
 import { BookDto, BookFilters, BookType } from '../types/books';
 import { GenreType } from '../types/genres';
-import { UserType } from '../types/users';
+import { ProfileUpdateDto, UserType } from '../types/users';
 
 export const libraryApi = createApi({
   reducerPath: 'libraryApi',
@@ -71,7 +71,7 @@ export const libraryApi = createApi({
       }),
     }),
     getMyProfile: builder.query<ApiResponse<UserType>, string>({
-      query: (accessToken: string) => ({
+      query: (accessToken) => ({
         url: '/auth/me',
         method: 'GET',
         headers: {
@@ -79,6 +79,35 @@ export const libraryApi = createApi({
         },
       }),
       providesTags: (result) =>
+        result ? [{ type: 'User', id: result.data._id }] : [],
+    }),
+    getUserById: builder.query<
+      ApiResponse<UserType>,
+      { accessToken: string; id: string }
+    >({
+      query: ({ accessToken, id }) => ({
+        url: `/users/${id}`,
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }),
+      providesTags: (result) =>
+        result ? [{ type: 'User', id: result.data._id }] : [],
+    }),
+    updateUserById: builder.mutation<
+      ApiResponse<UserType>,
+      { accessToken: string; id: string; body: ProfileUpdateDto }
+    >({
+      query: ({ accessToken, id, body }) => ({
+        url: `/users/${id}`,
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body,
+      }),
+      invalidatesTags: (result) =>
         result ? [{ type: 'User', id: result.data._id }] : [],
     }),
     updatePassword: builder.mutation<
@@ -200,4 +229,6 @@ export const {
   useGetGenreByIdQuery,
   useDeleteBookMutation,
   useUpdatePasswordMutation,
+  useGetUserByIdQuery,
+  useUpdateUserByIdMutation,
 } = libraryApi;

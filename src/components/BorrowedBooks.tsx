@@ -1,16 +1,7 @@
 import { DoneAllOutlined } from '@mui/icons-material';
-import {
-  Button,
-  Collapse,
-  Divider,
-  Grid,
-  Grow,
-  Typography,
-  Zoom,
-} from '@mui/material';
-import Grid2 from '@mui/material/Unstable_Grid2/Grid2';
+import { Button, Divider, Grid, Grow, Typography } from '@mui/material';
 import pluralize from 'pluralize';
-import { Transition, TransitionGroup } from 'react-transition-group';
+import { TransitionGroup } from 'react-transition-group';
 import { useReturnBooksMutation } from '../api/library';
 import useAuth from '../hooks/useAuth';
 import useOwnership from '../hooks/useOwnership';
@@ -97,7 +88,7 @@ export default function BorrowedBooks({ borrower }: Props) {
               startIcon={<DoneAllOutlined />}
               onClick={() => handleReturn(books)}
             >
-              Return all
+              Return all books
             </Button>
           </Grid>
         )}

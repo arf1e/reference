@@ -12,6 +12,7 @@ const initialState: BooksState = {
     title: '',
     genre: '',
     author: '',
+    status: '',
   },
   pagination: {
     page: 1,

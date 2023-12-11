@@ -1,4 +1,4 @@
-import { Box, Button, TextField, Typography, useTheme } from '@mui/material';
+import { Box, Button, TextField, useTheme } from '@mui/material';
 import { Formik } from 'formik';
 import useStatusBar from '../hooks/useStatusBar';
 import * as yup from 'yup';

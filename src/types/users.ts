@@ -14,3 +14,10 @@ export type UserType = {
   role: UserRole;
   borrowedBooks: BookType[];
 };
+
+export type ProfileUpdateDto = {
+  email: string;
+  firstName: string;
+  lastName: string;
+  image: string;
+};

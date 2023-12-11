@@ -32,4 +32,5 @@ export interface BookFilters {
   title: string;
   author: string;
   genre: string;
+  status: 'available' | 'borrowed' | '';
 }

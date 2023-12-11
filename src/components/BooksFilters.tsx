@@ -1,5 +1,13 @@
 import { FilterListOutlined } from '@mui/icons-material';
-import { Box, Button, Grid, TextField, useTheme } from '@mui/material';
+import {
+  Box,
+  Button,
+  Grid,
+  TextField,
+  ToggleButton,
+  ToggleButtonGroup,
+  useTheme,
+} from '@mui/material';
 import { Formik } from 'formik';
 import _ from 'lodash';
 import { useState } from 'react';
@@ -17,6 +25,7 @@ const filtersDefaultValues: BookFilters = {
   title: '',
   author: '',
   genre: '',
+  status: '',
 };
 
 export default function BooksFilters() {
@@ -26,11 +35,9 @@ export default function BooksFilters() {
   const [genreInput, setGenreInput] = useState('');
 
   const filters = useSelector((state: RootState) => selectFilters(state.books));
-
   const applyFilters = (filters: BookFilters) => {
     dispatch(setFilters(filters));
   };
-
   const resetFilters = () => {
     dispatch(setFilters(filtersDefaultValues));
   };
@@ -65,6 +72,7 @@ export default function BooksFilters() {
             <Grid
               container
               spacing={1}
+              columnSpacing={2}
               mb={1}
               sx={{
                 mb: 2,
@@ -72,7 +80,7 @@ export default function BooksFilters() {
                 justifyContent: 'space-between',
               }}
             >
-              <Grid item xs={12}>
+              <Grid item xs={12} sm={6}>
                 <TextField
                   label="Title"
                   fullWidth
@@ -81,13 +89,46 @@ export default function BooksFilters() {
                   onChange={formikProps.handleChange}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} sm={6}>
+                <ToggleButtonGroup
+                  value={formikProps.values.status}
+                  size="large"
+                  exclusive
+                  color="primary"
+                  onChange={(_e, value) => {
+                    formikProps.setFieldValue('status', value);
+                    formikProps.submitForm();
+                  }}
+                >
+                  <ToggleButton
+                    value=""
+                    disabled={formikProps.values.status === ''}
+                  >
+                    Any book status
+                  </ToggleButton>
+                  <ToggleButton
+                    value="available"
+                    disabled={formikProps.values.status === 'available'}
+                  >
+                    Available
+                  </ToggleButton>
+                  <ToggleButton
+                    value="borrowed"
+                    disabled={formikProps.values.status === 'borrowed'}
+                  >
+                    Borrowed
+                  </ToggleButton>
+                </ToggleButtonGroup>
+              </Grid>
+              <Grid item xs={12} sm={6}>
                 <AuthorsAutocompleteInput
                   onChooseElement={(author) => {
                     formikProps.setFieldValue('author', author._id);
+                    formikProps.submitForm();
                   }}
                   onDeleteValue={() => {
                     formikProps.setFieldValue('author', '');
+                    formikProps.submitForm();
                   }}
                   title="Author"
                   label={
@@ -97,17 +138,23 @@ export default function BooksFilters() {
                   }
                   placeholder="Search for an author"
                   inputValue={authorInput}
+                  replace
                   onInputChange={setAuthorInput}
                   selectedValues={_.without([formikProps.values.author], '')}
                 />
               </Grid>
-              <Grid item xs={12}>
+              <Grid item xs={12} sm={6}>
                 <GenresAutocompleteInput
                   onChooseElement={(genre) => {
                     formikProps.setFieldValue('genre', genre._id);
+                    formikProps.submitForm();
                   }}
-                  onDeleteValue={() => formikProps.setFieldValue('genre', '')}
+                  onDeleteValue={() => {
+                    formikProps.setFieldValue('genre', '');
+                    formikProps.submitForm();
+                  }}
                   title="Genre"
+                  replace
                   label={
                     formikProps.values.genre
                       ? 'Choose another genre'
@@ -127,6 +174,7 @@ export default function BooksFilters() {
               <Button
                 type="reset"
                 variant="text"
+                disabled={_.isEqual(formikProps.values, filtersDefaultValues)}
                 color="error"
                 onClick={() => {
                   formikProps.resetForm({ values: filtersDefaultValues });

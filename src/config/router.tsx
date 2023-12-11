@@ -11,10 +11,11 @@ import CreateGenre from '../pages/CreateGenre';
 import EditAuthor from '../pages/EditAuthor';
 import EditBook from '../pages/EditBook';
 import EditGenre from '../pages/EditGenre';
+import EditProfile from '../pages/EditProfile';
 import Genre from '../pages/Genre';
 import Genres from '../pages/Genres';
 import Index from '../pages/Index';
-import Profile from '../pages/Profile';
+import Me from '../pages/Me';
 import UpdatePassword from '../pages/UpdatePassword';
 
 const router = createBrowserRouter([
@@ -60,7 +61,15 @@ const router = createBrowserRouter([
         path: 'me',
         element: (
           <AuthGate>
-            <Profile />
+            <Me />
+          </AuthGate>
+        ),
+      },
+      {
+        path: 'users/:id/edit',
+        element: (
+          <AuthGate accessDeniedMessage="You have to log in first.">
+            <EditProfile />
           </AuthGate>
         ),
       },

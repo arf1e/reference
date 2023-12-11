@@ -2,6 +2,7 @@ import {
   Box,
   CircularProgress,
   Collapse,
+  Fade,
   ListItem,
   ListItemButton,
   TextField,
@@ -28,6 +29,7 @@ type Props<Element extends { _id: string }, ResponseFormat> = {
   selectedValues: string[];
   onChooseElement: (element: Element) => void;
   valueExtractor: (element: Element) => string;
+  replace?: boolean;
   endpoint: string;
   queryParam: string;
   suggestionsExtractor: (response: ResponseFormat) => Element[];
@@ -65,6 +67,7 @@ export default function AutocompleteInput<
   title,
   valueExtractor,
   renderChip,
+  replace = false,
   ...textFieldProps
 }: Props<Entity, Response>) {
   const [query, resetQuery] = useDebouncedValue(inputValue, 300);
@@ -138,14 +141,17 @@ export default function AutocompleteInput<
         </TransitionGroup>
       </Box>
       <Box sx={{ mt: 1, position: 'relative', width: '100%' }}>
-        <TextField
-          {...textFieldProps}
-          value={inputValue}
-          error={state === SUGGESTIONS_ERROR}
-          onChange={(e) => onInputChange(e.target.value)}
-          sx={{ mt: 1 }}
-          fullWidth
-        />
+        {replace && selectedValues.length > 0 ? null : (
+          <Fade in={true}>
+            <TextField
+              {...textFieldProps}
+              value={inputValue}
+              error={state === SUGGESTIONS_ERROR}
+              onChange={(e) => onInputChange(e.target.value)}
+              fullWidth
+            />
+          </Fade>
+        )}
         {state === SUGGESTIONS_LOADING && (
           <AutocompleteSuggestionsContainer>
             <ListItem>

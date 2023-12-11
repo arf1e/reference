@@ -1,9 +1,10 @@
-import { Box, Grid } from '@mui/material';
-import { Container } from '@mui/system';
+import { ChevronLeft } from '@mui/icons-material';
+import { Box, Button } from '@mui/material';
+import { Link } from 'react-router-dom';
 import { useCreateBookMutation } from '../api/library';
 import BookForm from '../components/BookForm';
+import FormPage from '../components/FormPage';
 import useAuth from '../hooks/useAuth';
-import Heading from '../styles/styled/Heading';
 import { BookDto } from '../types/books';
 
 export default function CreateBook() {
@@ -12,22 +13,16 @@ export default function CreateBook() {
   const handleCreateBook = async (book: BookDto) =>
     createBook({ accessToken: jwt || '', book });
   return (
-    <Box>
-      <Container>
-        <Grid container justifyContent="center">
-          <Grid item xs={12} sm={10} md={8} lg={6} sx={{ my: 8 }}>
-            <Box sx={{ mb: 2, display: 'flex', justifyContent: 'center' }}>
-              <Heading variant="h3" component="h1" alignSelf="center">
-                Add a new book
-              </Heading>
-            </Box>
-            <BookForm
-              onSubmit={handleCreateBook}
-              successMessage="New book has been added"
-            />
-          </Grid>
-        </Grid>
-      </Container>
-    </Box>
+    <FormPage title="Add a new book">
+      <Box alignItems="flex-start" mb={1}>
+        <Link to="/">
+          <Button startIcon={<ChevronLeft />}>Back to main</Button>
+        </Link>
+      </Box>
+      <BookForm
+        onSubmit={handleCreateBook}
+        successMessage="New book has been added"
+      />
+    </FormPage>
   );
 }

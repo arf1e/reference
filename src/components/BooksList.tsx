@@ -1,10 +1,9 @@
-import { Box, Grid, Pagination, Typography, useTheme } from '@mui/material';
+import { Grid, Pagination, Typography, useTheme } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useGetAllBooksQuery } from '../api/library';
 import { AppDispatch, RootState } from '../slices';
 import { selectFilters, selectPagination, setPage } from '../slices/booksSlice';
-import composeBackgroundColor from '../utils/composeBackgroundColor';
 import BookCard from './BookCard';
 
 const BOOKS_LOADING = 'LOADING';
