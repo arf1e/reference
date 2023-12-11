@@ -2,11 +2,20 @@ import { createBrowserRouter } from 'react-router-dom';
 import AuthGate from '../components/AuthGate';
 import RootLayout from '../components/RootLayout';
 import Auth from '../pages/Auth';
+import Author from '../pages/Author';
+import Authors from '../pages/Authors';
 import Book from '../pages/Book';
+import CreateAuthor from '../pages/CreateAuthor';
 import CreateBook from '../pages/CreateBook';
+import CreateGenre from '../pages/CreateGenre';
+import EditAuthor from '../pages/EditAuthor';
 import EditBook from '../pages/EditBook';
+import EditGenre from '../pages/EditGenre';
+import Genre from '../pages/Genre';
+import Genres from '../pages/Genres';
 import Index from '../pages/Index';
 import Profile from '../pages/Profile';
+import UpdatePassword from '../pages/UpdatePassword';
 
 const router = createBrowserRouter([
   {
@@ -52,6 +61,74 @@ const router = createBrowserRouter([
         element: (
           <AuthGate>
             <Profile />
+          </AuthGate>
+        ),
+      },
+      {
+        path: 'update-password',
+        element: (
+          <AuthGate>
+            <UpdatePassword />
+          </AuthGate>
+        ),
+      },
+      {
+        path: 'genres',
+        element: <Genres />,
+      },
+      {
+        path: 'genres/:id',
+        element: <Genre />,
+      },
+      {
+        path: 'genres/:id/edit',
+        element: (
+          <AuthGate
+            needsAdminRights
+            accessDeniedMessage="You need to be an admin to edit a genre"
+          >
+            <EditGenre />
+          </AuthGate>
+        ),
+      },
+      {
+        path: 'genres/new',
+        element: (
+          <AuthGate
+            needsAdminRights
+            accessDeniedMessage="You need to be an admin to create a genre"
+          >
+            <CreateGenre />
+          </AuthGate>
+        ),
+      },
+      {
+        path: 'authors',
+        element: <Authors />,
+      },
+      {
+        path: 'authors/:id',
+        element: <Author />,
+      },
+      {
+        path: 'authors/:id/edit',
+        element: (
+          <AuthGate
+            needsAdminRights
+            accessDeniedMessage="You need to be an admin to edit an author"
+          >
+            <EditAuthor />
+          </AuthGate>
+        ),
+      },
+      {
+        path: 'authors/new',
+        element: (
+          <AuthGate
+            needsAdminRights
+            accessDeniedMessage="You need to be an admin to create an author"
+          >
+            <CreateAuthor />
           </AuthGate>
         ),
       },

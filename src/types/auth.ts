@@ -11,6 +11,11 @@ export interface SignupInput {
   image: string;
 }
 
+export interface UpdatePasswordInput {
+  oldPassword: string;
+  newPassword: string;
+}
+
 export type JwtResponse = {
   accessToken: string;
 };

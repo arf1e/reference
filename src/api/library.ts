@@ -1,7 +1,12 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { API_URL } from '../config/api';
 import { ApiResponse, PaginationInput, WithPagination } from '../types/api';
-import { JwtResponse, LoginInput, SignupInput } from '../types/auth';
+import {
+  JwtResponse,
+  LoginInput,
+  SignupInput,
+  UpdatePasswordInput,
+} from '../types/auth';
 import { AuthorType } from '../types/authors';
 import { BookDto, BookFilters, BookType } from '../types/books';
 import { GenreType } from '../types/genres';
@@ -75,6 +80,19 @@ export const libraryApi = createApi({
       }),
       providesTags: (result) =>
         result ? [{ type: 'User', id: result.data._id }] : [],
+    }),
+    updatePassword: builder.mutation<
+      ApiResponse<null>,
+      UpdatePasswordInput & { accessToken: string }
+    >({
+      query: ({ accessToken, ...body }) => ({
+        url: '/auth/password',
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body,
+      }),
     }),
     lendBooks: builder.mutation<
       ApiResponse<{ borrowedBooks: string[] }>,
@@ -181,4 +199,5 @@ export const {
   useGetAuthorByIdQuery,
   useGetGenreByIdQuery,
   useDeleteBookMutation,
+  useUpdatePasswordMutation,
 } = libraryApi;

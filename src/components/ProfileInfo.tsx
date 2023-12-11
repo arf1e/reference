@@ -2,6 +2,8 @@ import { EditOutlined, LockOutlined } from '@mui/icons-material';
 import { Avatar, Box, Button, Grid, Typography, useTheme } from '@mui/material';
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
+import useAuth from '../hooks/useAuth';
 import useOwnership from '../hooks/useOwnership';
 import { AppDispatch } from '../slices';
 import { logout } from '../slices/authSlice';
@@ -21,6 +23,7 @@ const PROFILE_IMAGE_SIZE = 150;
 
 export default function ProfileInfo({ user }: Props) {
   const [alertOpen, setAlertOpen] = useState(false);
+  const { isAdmin } = useAuth();
   const theme = useTheme();
   const isOwn = useOwnership(user._id);
   const dispatch = useDispatch<AppDispatch>();
@@ -98,26 +101,33 @@ export default function ProfileInfo({ user }: Props) {
               display: 'flex',
             }}
           >
-            <Button variant="text" startIcon={<EditOutlined />}>
-              Edit Profile
-            </Button>
-            <Button
-              variant="text"
-              sx={{ ml: 2 }}
-              color="secondary"
-              startIcon={<LockOutlined />}
-            >
-              Change Password
-            </Button>
-            {isOwn && (
-              <Button
-                onClick={openAlert}
-                variant="text"
-                sx={{ ml: 'auto' }}
-                color="error"
-              >
-                Logout
+            {(isOwn || isAdmin) && (
+              <Button variant="text" startIcon={<EditOutlined />}>
+                Edit Profile
               </Button>
+            )}
+            {isOwn && (
+              <>
+                <Link to="/update-password">
+                  <Button
+                    variant="text"
+                    sx={{ ml: 2 }}
+                    color="secondary"
+                    LinkComponent={Link}
+                    startIcon={<LockOutlined />}
+                  >
+                    Change Password
+                  </Button>
+                </Link>
+                <Button
+                  onClick={openAlert}
+                  variant="text"
+                  sx={{ ml: 'auto' }}
+                  color="error"
+                >
+                  Logout
+                </Button>
+              </>
             )}
           </Box>
         </Box>
