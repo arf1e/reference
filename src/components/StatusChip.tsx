@@ -1,5 +1,4 @@
 import { Chip, ChipOwnProps } from '@mui/material';
-import _ from 'lodash';
 import { useMemo } from 'react';
 import useAuth from '../hooks/useAuth';
 import { BookType } from '../types/books';

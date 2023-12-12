@@ -49,7 +49,7 @@ export default function CartOverlay() {
     }
 
     setState(STATE_LIST);
-  });
+  }, [isLoading, user, books.length]);
 
   return (
     <Slide direction="left" in={isShown} mountOnEnter unmountOnExit>

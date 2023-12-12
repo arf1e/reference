@@ -1,4 +1,4 @@
-import { Grid, Pagination, Typography, useTheme } from '@mui/material';
+import { Grid, Pagination, Typography } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useGetAllBooksQuery } from '../api/library';
@@ -29,7 +29,6 @@ export default function BooksList() {
   };
 
   const [state, setState] = useState<BooksListState>(BOOKS_LOADING);
-  const theme = useTheme();
   const {
     data: getAllBooksResponse,
     error,

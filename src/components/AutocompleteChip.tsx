@@ -45,13 +45,9 @@ export const AuthorAutocompleteChip = ({
     }
 
     return 'Loading...';
-  }, [isFetching, isError, authorResponse?.data]);
+  }, [isError, authorResponse?.data]);
   return (
-    <AutocompleteChip
-      label={label}
-      onDelete={onDelete}
-      disabled={isFetching || isError}
-    />
+    <AutocompleteChip label={label} onDelete={onDelete} disabled={isFetching} />
   );
 };
 
@@ -73,6 +69,8 @@ export const GenreAutocompleteChip = ({
     }
 
     return 'Loading...';
-  }, [isFetching, isError, genreResponse?.data]);
-  return <AutocompleteChip label={label} onDelete={onDelete} />;
+  }, [isError, genreResponse?.data]);
+  return (
+    <AutocompleteChip label={label} onDelete={onDelete} disabled={isFetching} />
+  );
 };

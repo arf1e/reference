@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
 import { BookType } from '../types/books';
 
-export default (publishedDate: BookType['publishedDate']) =>
-  dayjs(publishedDate).year();
+export default function getPublishedYear(publishedDate: BookType['publishedDate']) {
+  return dayjs(publishedDate).year();
+}

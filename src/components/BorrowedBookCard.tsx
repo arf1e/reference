@@ -1,7 +1,6 @@
 import { CheckOutlined } from '@mui/icons-material';
 import { Box, Button, Typography, useTheme } from '@mui/material';
 import dayjs from 'dayjs';
-import { Link } from 'react-router-dom';
 import { BookType } from '../types/books';
 import composeBackgroundColor from '../utils/composeBackgroundColor';
 

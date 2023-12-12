@@ -46,7 +46,7 @@ export default function EditProfile() {
 
     setState(STATE_FORBIDDEN);
     navigate('/me');
-  }, [isLoading, setState, isAdmin, isOwn]);
+  }, [isLoading, setState, isAdmin, isOwn, navigate]);
 
   const [updateProfile] = useUpdateUserByIdMutation();
 

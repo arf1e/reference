@@ -1,5 +1,5 @@
 import { DeleteOutlined, EditOutlined } from '@mui/icons-material';
-import { Box, BoxProps, Button, CircularProgress } from '@mui/material';
+import { Box, BoxProps, Button } from '@mui/material';
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { useDeleteBookMutation } from '../api/library';

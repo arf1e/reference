@@ -1,4 +1,4 @@
-const PRODUCTION = 'https://library.egorushque.space/api/v1/';
+const PRODUCTION = 'https://library.egorushque.com/api/v1/';
 const DEVELOPMENT = 'http://localhost:1337/api/v1/';
 
 const urlMapper = {

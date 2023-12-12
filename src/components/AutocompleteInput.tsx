@@ -102,7 +102,7 @@ export default function AutocompleteInput<
 
     setSuggestions([]);
     setState(SUGGESTIONS_IDLE);
-  }, [query]);
+  }, [query, endpoint, queryParam, suggestionsExtractor]);
 
   const handleSelectSuggestion = (suggestion: Entity) => {
     onInputChange('');
