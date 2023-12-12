@@ -1,6 +1,15 @@
 import { ChevronLeft } from '@mui/icons-material';
-import { Box, Button, Container, Grid, Grow, Typography } from '@mui/material';
-import { Link } from 'react-router-dom';
+import {
+  Box,
+  Button,
+  Container,
+  Grid,
+  Grow,
+  Typography,
+  Link as MaterialLink,
+} from '@mui/material';
+import pluralize from 'pluralize';
+import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';
 import { BookType } from '../types/books';
 import getPublishedYear from '../utils/getPublishedYear';
@@ -14,14 +23,15 @@ type Props = {
 
 export default function BookData({ book }: Props) {
   const { user } = useAuth();
+  const navigate = useNavigate();
   return (
     <Grow in={true}>
       <Container sx={{ my: 8 }}>
         <Grid container spacing={1}>
           <Grid item xs={12} mb={1}>
-            <Link to={`/#books`}>
-              <Button startIcon={<ChevronLeft />}>Back to catalog</Button>
-            </Link>
+            <Button startIcon={<ChevronLeft />} onClick={() => navigate(-1)}>
+              Go back
+            </Button>
           </Grid>
           <Grid item xs={12} sm={4}>
             <img
@@ -73,6 +83,18 @@ export default function BookData({ book }: Props) {
               <Typography variant="body1" mb={1}>
                 {getPublishedYear(book.publishedDate)}
               </Typography>
+              {book.genres.length > 0 && (
+                <>
+                  <Typography variant="caption">
+                    {pluralize('Genre', book.genres.length)}
+                  </Typography>
+                  <Box sx={{ display: 'flex', gap: 1 }}>
+                    <Typography variant="body1">
+                      {book.genres.map((genre) => genre.title).join(', ')}
+                    </Typography>
+                  </Box>
+                </>
+              )}
               <AdminBookControls book={book} mt={4} alignSelf="flex-start" />
             </Box>
           </Grid>

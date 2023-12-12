@@ -1,4 +1,4 @@
-import { FilterListOutlined } from '@mui/icons-material';
+import { ClearAllOutlined } from '@mui/icons-material';
 import {
   Box,
   Button,
@@ -10,8 +10,9 @@ import {
 } from '@mui/material';
 import { Formik } from 'formik';
 import _ from 'lodash';
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
+import useDebouncedValue from '../hooks/useDebouncedValue';
 import { AppDispatch, RootState } from '../slices';
 import { selectFilters, setFilters } from '../slices/booksSlice';
 import { BookFilters } from '../types/books';
@@ -31,16 +32,40 @@ const filtersDefaultValues: BookFilters = {
 export default function BooksFilters() {
   const theme = useTheme();
   const dispatch = useDispatch<AppDispatch>();
+
   const [authorInput, setAuthorInput] = useState('');
   const [genreInput, setGenreInput] = useState('');
 
   const filters = useSelector((state: RootState) => selectFilters(state.books));
-  const applyFilters = (filters: BookFilters) => {
-    dispatch(setFilters(filters));
-  };
+
+  const [titleInput, setTitleInput] = useState(filters.title);
+  const [debouncedTitleInput, resetDebouncedTitleInput] = useDebouncedValue(
+    titleInput,
+    500
+  );
+
+  const applyFilters = useCallback(
+    (filters: BookFilters) => {
+      dispatch(setFilters(filters));
+    },
+    [dispatch]
+  );
+
+  const provideTitleToFilters = useCallback(
+    (title: string) => {
+      applyFilters({ ...filters, title });
+    },
+    [applyFilters, filters]
+  );
+
   const resetFilters = () => {
     dispatch(setFilters(filtersDefaultValues));
+    resetDebouncedTitleInput('');
   };
+
+  useEffect(() => {
+    provideTitleToFilters(debouncedTitleInput);
+  }, [debouncedTitleInput]); // eslint-disable-line react-hooks/exhaustive-deps
 
   return (
     <Box
@@ -86,7 +111,10 @@ export default function BooksFilters() {
                   fullWidth
                   name="title"
                   value={formikProps.values.title}
-                  onChange={formikProps.handleChange}
+                  onChange={(e) => {
+                    setTitleInput(e.target.value);
+                    formikProps.handleChange(e);
+                  }}
                 />
               </Grid>
               <Grid item xs={12} sm={6}>
@@ -168,19 +196,17 @@ export default function BooksFilters() {
               </Grid>
             </Grid>
             <Box sx={{ display: 'flex', justifyContent: 'flex-start' }}>
-              <Button type="submit" startIcon={<FilterListOutlined />}>
-                Apply filters
-              </Button>
               <Button
                 type="reset"
                 variant="text"
                 disabled={_.isEqual(formikProps.values, filtersDefaultValues)}
                 color="error"
+                startIcon={<ClearAllOutlined />}
                 onClick={() => {
                   formikProps.resetForm({ values: filtersDefaultValues });
                 }}
               >
-                Clear
+                Clear Filters
               </Button>
             </Box>
           </Box>

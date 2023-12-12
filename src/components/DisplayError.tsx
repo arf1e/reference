@@ -17,13 +17,15 @@ type Props = {
   description?: string;
   errorOutput?: any;
   redirectTo?: string;
+  singleEntity?: boolean;
 } & BoxProps;
 
-export default function DisplayErroy({
+export default function DisplayError({
   title,
   description,
   errorOutput,
   redirectTo,
+  singleEntity,
   ...boxProps
 }: Props) {
   const theme = useTheme();
@@ -31,9 +33,12 @@ export default function DisplayErroy({
     <Box {...boxProps}>
       <Meta pageTitle="Error" />
       <Container>
-        <Heading variant="h2" component="h1">
-          {title}
-        </Heading>
+        {singleEntity && (
+          <Heading variant="h2" component="h1">
+            {title}
+          </Heading>
+        )}
+        {!singleEntity && <Typography variant="h5">{title}</Typography>}
         <Typography variant="body1" mt={4} mb={2} sx={{ maxWidth: '50%' }}>
           {description}
         </Typography>

@@ -13,6 +13,7 @@ import {
 import cartReducer, { CartState } from './cartSlice';
 import authReducer, { AuthState } from './authSlice';
 import booksReducer from './booksSlice';
+import genresReducer from './genresSlice';
 import localforage from 'localforage';
 import persistStore from 'redux-persist/es/persistStore';
 
@@ -40,6 +41,7 @@ export const initiateStore = () =>
         authPersistConfig,
         authReducer
       ),
+      genres: genresReducer,
     },
     middleware(getDefaultMiddleware) {
       return getDefaultMiddleware({

@@ -9,7 +9,7 @@ import {
 } from '../types/auth';
 import { AuthorType } from '../types/authors';
 import { BookDto, BookFilters, BookType } from '../types/books';
-import { GenreType } from '../types/genres';
+import { GenreDto, GenreFilters, GenreType } from '../types/genres';
 import { ProfileUpdateDto, UserType } from '../types/users';
 
 export const libraryApi = createApi({
@@ -32,9 +32,14 @@ export const libraryApi = createApi({
                 type: 'Book' as const,
                 id: _id,
               })),
+              {
+                type: 'Book',
+                id: 'LIST',
+              },
             ]
-          : ['Book'],
+          : [{ type: 'Book', id: 'LIST' }],
     }),
+
     getBookByIsbn: builder.query<ApiResponse<BookType>, string>({
       query: (isbn) => ({
         url: `/books/${isbn}`,
@@ -42,87 +47,53 @@ export const libraryApi = createApi({
       providesTags: (result) =>
         result ? [{ type: 'Book', id: result.data._id }] : [],
     }),
-    getAuthorById: builder.query<ApiResponse<AuthorType>, string>({
-      query: (id) => ({
-        url: `/authors/${id}`,
-      }),
-      providesTags: (result) =>
-        result ? [{ type: 'Author', id: result.data._id }] : [],
-    }),
-    getGenreById: builder.query<ApiResponse<GenreType>, string>({
-      query: (id) => ({
-        url: `/genres/${id}`,
-      }),
-      providesTags: (result) =>
-        result ? [{ type: 'Genre', id: result.data._id }] : [],
-    }),
-    login: builder.mutation<ApiResponse<JwtResponse>, LoginInput>({
-      query: (credentials) => ({
-        url: '/auth/login',
+
+    createBook: builder.mutation<
+      ApiResponse<BookType>,
+      { accessToken: string; book: BookDto }
+    >({
+      query: ({ accessToken, book }) => ({
+        url: '/books',
         method: 'POST',
-        body: credentials,
-      }),
-    }),
-    signup: builder.mutation<ApiResponse<JwtResponse>, SignupInput>({
-      query: (credentials) => ({
-        url: '/auth/signup',
-        method: 'POST',
-        body: credentials,
-      }),
-    }),
-    getMyProfile: builder.query<ApiResponse<UserType>, string>({
-      query: (accessToken) => ({
-        url: '/auth/me',
-        method: 'GET',
+        body: book,
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       }),
-      providesTags: (result) =>
-        result ? [{ type: 'User', id: result.data._id }] : [],
+      invalidatesTags: [{ type: 'Book', id: 'LIST' }],
     }),
-    getUserById: builder.query<
-      ApiResponse<UserType>,
-      { accessToken: string; id: string }
+
+    updateBook: builder.mutation<
+      ApiResponse<BookType>,
+      { accessToken: string; book: BookDto; isbn: string }
     >({
-      query: ({ accessToken, id }) => ({
-        url: `/users/${id}`,
-        method: 'GET',
-        headers: {
-          Authorization: `Bearer ${accessToken}`,
-        },
-      }),
-      providesTags: (result) =>
-        result ? [{ type: 'User', id: result.data._id }] : [],
-    }),
-    updateUserById: builder.mutation<
-      ApiResponse<UserType>,
-      { accessToken: string; id: string; body: ProfileUpdateDto }
-    >({
-      query: ({ accessToken, id, body }) => ({
-        url: `/users/${id}`,
+      query: ({ accessToken, book, isbn }) => ({
+        url: `/books/${isbn}`,
         method: 'PUT',
+        body: book,
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-        body,
       }),
-      invalidatesTags: (result) =>
-        result ? [{ type: 'User', id: result.data._id }] : [],
+      invalidatesTags: (result, _error) =>
+        result ? [{ type: 'Book', id: result.data._id }] : [],
     }),
-    updatePassword: builder.mutation<
-      ApiResponse<null>,
-      UpdatePasswordInput & { accessToken: string }
+
+    deleteBook: builder.mutation<
+      void,
+      { accessToken: string; isbn: string; id: string }
     >({
-      query: ({ accessToken, ...body }) => ({
-        url: '/auth/password',
-        method: 'PUT',
+      query: ({ accessToken, isbn }) => ({
+        url: `/books/${isbn}`,
+        method: 'DELETE',
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
-        body,
       }),
+      invalidatesTags: (_result, error, args) =>
+        error ? [] : [{ type: 'Book', id: args.id }],
     }),
+
     lendBooks: builder.mutation<
       ApiResponse<{ borrowedBooks: string[] }>,
       { userId: string; bookIds: string[]; accessToken: string }
@@ -146,6 +117,7 @@ export const libraryApi = createApi({
             ]
           : [],
     }),
+
     returnBooks: builder.mutation<
       ApiResponse<{ returnedBooks: string[] }>,
       { userId: string; bookIds: string[]; accessToken: string }
@@ -169,47 +141,158 @@ export const libraryApi = createApi({
             ]
           : [],
     }),
-    createBook: builder.mutation<
-      ApiResponse<BookType>,
-      { accessToken: string; book: BookDto }
+
+    getAllGenres: builder.query<
+      ApiResponse<WithPagination<{ genres: GenreType[] }>>,
+      GenreFilters & PaginationInput
     >({
-      query: ({ accessToken, book }) => ({
-        url: '/books',
+      query: (filters) => ({
+        url: '/genres',
+        params: filters,
+      }),
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.data.genres.map(({ _id }) => ({
+                type: 'Genre' as const,
+                id: _id,
+              })),
+            ]
+          : [{ type: 'Genre', id: 'LIST' }],
+    }),
+
+    getGenreById: builder.query<ApiResponse<GenreType>, string>({
+      query: (id) => ({
+        url: `/genres/${id}`,
+      }),
+      providesTags: (result) =>
+        result ? [{ type: 'Genre', id: result.data._id }] : [],
+    }),
+
+    createGenre: builder.mutation<
+      ApiResponse<GenreType>,
+      { genreData: GenreDto; accessToken: string }
+    >({
+      query: ({ accessToken, genreData: body }) => ({
+        url: `/genres`,
         method: 'POST',
-        body: book,
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
+        body,
       }),
+      invalidatesTags: ['Genre'],
     }),
-    updateBook: builder.mutation<
-      ApiResponse<BookType>,
-      { accessToken: string; book: BookDto; isbn: string }
+
+    updateGenreById: builder.mutation<
+      ApiResponse<GenreType>,
+      { accessToken: string; id: string; genreData: GenreDto }
     >({
-      query: ({ accessToken, book, isbn }) => ({
-        url: `/books/${isbn}`,
+      query: ({ accessToken, id, genreData: body }) => ({
+        url: `/genres/${id}`,
         method: 'PUT',
-        body: book,
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
+        body,
       }),
-      invalidatesTags: (result, _error) =>
-        result ? [{ type: 'Book', id: result.data._id }] : [],
+      invalidatesTags: (result) =>
+        result ? [{ type: 'Genre', id: result.data._id }] : [],
     }),
-    deleteBook: builder.mutation<
+
+    deleteGenreById: builder.mutation<
       void,
-      { accessToken: string; isbn: string; id: string }
+      { accessToken: string; id: string }
     >({
-      query: ({ accessToken, isbn }) => ({
-        url: `/books/${isbn}`,
+      query: ({ accessToken, id }) => ({
+        url: `/genres/${id}`,
         method: 'DELETE',
         headers: {
           Authorization: `Bearer ${accessToken}`,
         },
       }),
-      invalidatesTags: (_result, error, args) =>
-        error ? [] : [{ type: 'Book', id: args.id }],
+      invalidatesTags: ['Genre'],
+    }),
+
+    getAuthorById: builder.query<ApiResponse<AuthorType>, string>({
+      query: (id) => ({
+        url: `/authors/${id}`,
+      }),
+      providesTags: (result) =>
+        result ? [{ type: 'Author', id: result.data._id }] : [],
+    }),
+
+    login: builder.mutation<ApiResponse<JwtResponse>, LoginInput>({
+      query: (credentials) => ({
+        url: '/auth/login',
+        method: 'POST',
+        body: credentials,
+      }),
+    }),
+
+    signup: builder.mutation<ApiResponse<JwtResponse>, SignupInput>({
+      query: (credentials) => ({
+        url: '/auth/signup',
+        method: 'POST',
+        body: credentials,
+      }),
+    }),
+
+    getMyProfile: builder.query<ApiResponse<UserType>, string>({
+      query: (accessToken) => ({
+        url: '/auth/me',
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }),
+      providesTags: (result) =>
+        result ? [{ type: 'User', id: result.data._id }] : [],
+    }),
+
+    getUserById: builder.query<
+      ApiResponse<UserType>,
+      { accessToken: string; id: string }
+    >({
+      query: ({ accessToken, id }) => ({
+        url: `/users/${id}`,
+        method: 'GET',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }),
+      providesTags: (result) =>
+        result ? [{ type: 'User', id: result.data._id }] : [],
+    }),
+
+    updateUserById: builder.mutation<
+      ApiResponse<UserType>,
+      { accessToken: string; id: string; body: ProfileUpdateDto }
+    >({
+      query: ({ accessToken, id, body }) => ({
+        url: `/users/${id}`,
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body,
+      }),
+      invalidatesTags: (result) =>
+        result ? [{ type: 'User', id: result.data._id }] : [],
+    }),
+
+    updatePassword: builder.mutation<
+      ApiResponse<null>,
+      UpdatePasswordInput & { accessToken: string }
+    >({
+      query: ({ accessToken, ...body }) => ({
+        url: '/auth/password',
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body,
+      }),
     }),
   }),
 });
@@ -231,4 +314,8 @@ export const {
   useUpdatePasswordMutation,
   useGetUserByIdQuery,
   useUpdateUserByIdMutation,
+  useGetAllGenresQuery,
+  useCreateGenreMutation,
+  useUpdateGenreByIdMutation,
+  useDeleteGenreByIdMutation,
 } = libraryApi;

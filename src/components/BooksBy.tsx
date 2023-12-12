@@ -1,14 +1,26 @@
 import { Grid, Pagination } from '@mui/material';
 import { useEffect, useMemo, useState } from 'react';
-import { useDispatch, useSelector } from 'react-redux';
 import { useGetAllBooksQuery } from '../api/library';
-import { AppDispatch, RootState } from '../slices';
-import { selectFilters, selectPagination, setPage } from '../slices/booksSlice';
+import { AuthorType } from '../types/authors';
+import { BookFilters } from '../types/books';
+import { GenreType } from '../types/genres';
 import BookCard, { BookCardSkeleton } from './BookCard';
 import DisplayError from './DisplayError';
 import ListEmpty from './ListEmpty';
 
-export const BOOKS_PER_CATALOG_PAGE = 8;
+type Props = {
+  genre?: GenreType;
+  author?: AuthorType;
+};
+
+const defaultValues: BookFilters = {
+  title: '',
+  status: '',
+  author: '',
+  genre: '',
+};
+
+export const BOOKS_PER_SPECIFIED_PAGE = 16;
 
 const BOOKS_LOADING = 'LOADING';
 const BOOKS_ERROR = 'ERROR';
@@ -21,26 +33,21 @@ type BooksListState =
   | typeof BOOKS_LIST
   | typeof BOOKS_EMPTY;
 
-export default function BooksList() {
-  const filters = useSelector((state: RootState) => selectFilters(state.books));
-  const pagination = useSelector((state: RootState) =>
-    selectPagination(state.books)
-  );
-  const dispatch = useDispatch<AppDispatch>();
-
-  const handlePageChange = (value: number) => {
-    dispatch(setPage(value));
-  };
-
+export default function BooksBy({ genre, author }: Props) {
+  const [page, setPage] = useState(1);
   const [state, setState] = useState<BooksListState>(BOOKS_LOADING);
+
   const {
-    data: getAllBooksResponse,
-    error,
+    data: booksResponse,
     isFetching,
+    isError,
+    error,
   } = useGetAllBooksQuery({
-    ...filters,
-    ...pagination,
-    limit: BOOKS_PER_CATALOG_PAGE,
+    ...defaultValues,
+    ...(genre && { genre: genre._id }),
+    ...(author && { author: author._id }),
+    page,
+    limit: BOOKS_PER_SPECIFIED_PAGE,
   });
 
   useEffect(() => {
@@ -49,30 +56,30 @@ export default function BooksList() {
       return;
     }
 
-    if (error) {
+    if (isError) {
       setState(BOOKS_ERROR);
       return;
     }
 
-    if (getAllBooksResponse?.data.books.length === 0) {
+    if (booksResponse?.data.books.length === 0) {
       setState(BOOKS_EMPTY);
       return;
     }
 
     setState(BOOKS_LIST);
-  }, [isFetching, error, getAllBooksResponse?.data.books.length]);
+  }, [isFetching, error, booksResponse?.data.books.length]);
 
   const renderList = useMemo(
     () =>
-      getAllBooksResponse?.data.books.map((book) => (
+      booksResponse?.data.books.map((book) => (
         <BookCard key={book._id} book={book} />
       )),
-    [getAllBooksResponse?.data.books]
+    [booksResponse?.data.books]
   );
 
   const renderSkeletons = useMemo(
     () =>
-      new Array(BOOKS_PER_CATALOG_PAGE / 2)
+      new Array(BOOKS_PER_SPECIFIED_PAGE / 2)
         .fill(0)
         .map((_, index) => <BookCardSkeleton key={index} />),
     []
@@ -83,8 +90,8 @@ export default function BooksList() {
       {state === BOOKS_LIST && renderList}
       {state === BOOKS_EMPTY && (
         <ListEmpty
-          title="No books found."
-          description="Please try updating the filters."
+          title={`No books found by this ${genre ? 'genre' : 'author'}.`}
+          description="Please wait until we add something."
         />
       )}
       {state === BOOKS_LOADING && renderSkeletons}
@@ -98,11 +105,11 @@ export default function BooksList() {
       )}
       <Grid item xs={12}>
         <Pagination
-          count={getAllBooksResponse?.data.pagination.totalPages}
-          page={pagination.page}
+          count={booksResponse?.data.pagination.totalPages}
+          page={page}
           shape="rounded"
           sx={{ mt: 2 }}
-          onChange={(_event, page) => handlePageChange(page)}
+          onChange={(_event, page) => setPage(page)}
         />
       </Grid>
     </Grid>

@@ -1,5 +1,4 @@
 import { BookDto, BookType } from '../types/books';
-import * as yup from 'yup';
 import { Formik, FormikProps } from 'formik';
 import {
   Box,
@@ -25,6 +24,9 @@ import {
   AuthorsAutocompleteInput,
   GenresAutocompleteInput,
 } from './AutocompleteInput';
+import { bookValidationSchema } from '../schemas/books';
+import { convertBookToFormValues } from '../utils/books';
+import { getImageUrl, handleClearImage, hasImage } from '../utils/images';
 
 type Props = {
   providedValues?: BookType;
@@ -33,31 +35,6 @@ type Props = {
 };
 
 type FormType = WithImageFile<BookDto>;
-
-const validationSchema = yup.object({
-  title: yup.string().required(),
-  isbn: yup.string().required().min(7).max(13),
-  publisher: yup.string().required(),
-  image: yup.string(),
-  authors: yup.array().of(yup.string().required()).min(1).required(),
-  genres: yup.array().of(yup.string().required()).min(1).required(),
-  publishedDate: yup.string().required(),
-});
-
-const convertBookToFormValues = (book: BookType) => {
-  const output = {
-    ..._.omit(book, ['_id']),
-    authors: book.authors.map(({ _id }) => _id),
-    genres: book.genres.map(({ _id }) => _id),
-    publishedDate: dayjs(book.publishedDate).format('YYYY-MM-DD'),
-    ...(book.borrowerId && {
-      borrowDate: dayjs(book.borrowDate).format('YYYY-MM-DD'),
-      returnDate: dayjs(book.returnDate).format('YYYY-MM-DD'),
-    }),
-    imageFile: null,
-  };
-  return output;
-};
 
 const initialValues: FormType = {
   title: '',
@@ -80,29 +57,12 @@ export default function BookForm({
   const [genreInput, setGenreInput] = useState('');
   const theme = useTheme();
 
-  const handleClearCover = (formikProps: FormikProps<FormType>) => {
-    formikProps.setFieldValue('image', '');
-    formikProps.setFieldValue('imageFile', null);
-  };
+  const handleClearCover = (formikProps: FormikProps<FormType>) =>
+    handleClearImage(formikProps);
 
-  const hasCover = (values: FormType) => {
-    const hasImage = Boolean(values.image);
-    const hasAttachedFile = Boolean(values.imageFile);
-    const hasCover = hasImage || hasAttachedFile;
-    return hasCover;
-  };
+  const hasCover = (values: FormType) => hasImage(values);
 
-  const coverUrl = (values: FormType) => {
-    if (values.image) {
-      return values.image;
-    }
-
-    if (values.imageFile) {
-      return URL.createObjectURL(values.imageFile);
-    }
-
-    return '';
-  };
+  const coverUrl = (values: FormType) => getImageUrl(values);
 
   const handleSubmit = async (values: FormType) => {
     setFormState('LOADING');
@@ -113,7 +73,7 @@ export default function BookForm({
     }
     if (values.imageFile) {
       try {
-        values.image = await handleFileUpload(values.imageFile as File);
+        values.image = await handleFileUpload(values.imageFile);
       } catch (error) {
         setFormState('ERROR');
         setMessage('Error uploading the cover');
@@ -141,7 +101,7 @@ export default function BookForm({
           ...initialValues,
           ...(providedValues ? convertBookToFormValues(providedValues) : {}),
         }}
-        validationSchema={validationSchema}
+        validationSchema={bookValidationSchema}
         onSubmit={handleSubmit}
       >
         {(formikProps) => (

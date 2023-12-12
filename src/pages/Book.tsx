@@ -1,8 +1,9 @@
-import { Box, CircularProgress } from '@mui/material';
+import { Box } from '@mui/material';
 import _ from 'lodash';
 import { useParams } from 'react-router-dom';
 import { useGetBookByIsbnQuery } from '../api/library';
 import BookData from '../components/BookData';
+import EntityLoading from '../components/EntityLoading';
 import Meta from '../components/Meta';
 
 export default function Book() {
@@ -15,7 +16,7 @@ export default function Book() {
       <Meta
         pageTitle={_.get(getBookByIsbnResponse, ['data', 'title'], 'Book')}
       />
-      {isFetching && <CircularProgress size={20} />}
+      {isFetching && <EntityLoading />}
       {getBookByIsbnResponse?.data && (
         <BookData book={getBookByIsbnResponse.data} />
       )}

@@ -28,9 +28,8 @@ export const booksSlice = createSlice({
       state.pagination.page = 1;
     },
 
-    clearFilters: (state) => {
-      state.filters = initialState.filters;
-      state.pagination.page = 1;
+    clearFilters: () => {
+      return initialState;
     },
 
     incrementPage: (state) => {
