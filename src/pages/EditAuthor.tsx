@@ -1,5 +1,6 @@
-import { Box, Zoom } from '@mui/material';
-import { useParams } from 'react-router-dom';
+import { ChevronLeft } from '@mui/icons-material';
+import { Box, Button, Zoom } from '@mui/material';
+import { useNavigate, useParams } from 'react-router-dom';
 import {
   useGetAuthorByIdQuery,
   useUpdateAuthorByIdMutation,
@@ -12,6 +13,7 @@ import useAuth from '../hooks/useAuth';
 export default function EditAuthor() {
   const { id } = useParams<{ id: string }>() as { id: string };
   const [updateAuthor] = useUpdateAuthorByIdMutation();
+  const navigate = useNavigate();
   const { data: authorResponse, isError, error } = useGetAuthorByIdQuery(id);
   const { jwt } = useAuth();
 
@@ -21,6 +23,16 @@ export default function EditAuthor() {
         <Zoom in={true}>
           <Box>
             <FormPage title="Update Author">
+              <Box
+                sx={{ mb: 1, display: 'flex', justifyContent: 'flex-start' }}
+              >
+                <Button
+                  startIcon={<ChevronLeft />}
+                  onClick={() => navigate(-1)}
+                >
+                  Go back
+                </Button>
+              </Box>
               <AuthorForm
                 successMessage="Author has been updated"
                 onSubmit={(values) =>

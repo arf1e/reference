@@ -16,6 +16,7 @@ import Genre from '../pages/Genre';
 import Genres from '../pages/Genres';
 import Index from '../pages/Index';
 import Me from '../pages/Me';
+import NotFound from '../pages/NotFound';
 import UpdatePassword from '../pages/UpdatePassword';
 
 const router = createBrowserRouter([
@@ -140,6 +141,10 @@ const router = createBrowserRouter([
             <CreateAuthor />
           </AuthGate>
         ),
+      },
+      {
+        path: '*',
+        element: <NotFound />,
       },
     ],
   },

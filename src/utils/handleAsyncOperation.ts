@@ -27,7 +27,6 @@ export default async function handleAsyncOperation(
 ) {
   try {
     const result = await submitFn();
-    console.log('[handleAsyncOperation]: result', result);
     if (
       !expectEmptyResponse &&
       _.get(result, ['data', 'status'], 'error') === 'error'

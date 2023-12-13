@@ -5,17 +5,17 @@ type Props = {
   message: string;
   author: string;
   timestamp: string;
-  side?: 'left' | 'right';
+  tipSide?: 'left' | 'right';
 };
 
 export default function MessageBubble({
   message,
   author,
   timestamp,
-  side = 'left',
+  tipSide = 'left',
 }: Props) {
   return (
-    <MessageBubbleContainer side={side}>
+    <MessageBubbleContainer side={tipSide}>
       <Typography variant="body2" className="author">
         {author}
       </Typography>

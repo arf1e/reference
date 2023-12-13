@@ -1,4 +1,4 @@
-import { Box, Container, useTheme } from '@mui/material';
+import { Box, Container, Typography, useTheme } from '@mui/material';
 import composeBackgroundColor from '../utils/composeBackgroundColor';
 import Logo from './Logo';
 
@@ -14,7 +14,24 @@ export default function Footer() {
       }}
     >
       <Container>
-        <Logo />
+        <Box
+          sx={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+          }}
+        >
+          <Logo />
+          <Box
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'flex-end',
+            }}
+          >
+            <Typography variant="caption">We're not a real company.</Typography>
+          </Box>
+        </Box>
       </Container>
     </Box>
   );

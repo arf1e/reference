@@ -20,7 +20,11 @@ const initialValues: UpdatePasswordValues = {
 const validationSchema = yup.object().shape({
   oldPassword: yup.string().required().min(6),
   newPassword: yup.string().required().min(6),
-  confirmPassword: yup.string().required().min(6),
+  confirmPassword: yup
+    .string()
+    .required()
+    .min(6)
+    .oneOf([yup.ref('newPassword')], 'Passwords must match'),
 });
 
 export default function UpdatePasswordForm() {
@@ -86,14 +90,30 @@ export default function UpdatePasswordForm() {
               value={formikProps.values.oldPassword}
               onChange={formikProps.handleChange}
               onBlur={formikProps.handleBlur}
+              error={
+                formikProps.touched.oldPassword &&
+                Boolean(formikProps.errors.oldPassword)
+              }
+              helperText={
+                formikProps.touched.oldPassword &&
+                formikProps.errors.oldPassword
+              }
             />
             <TextField
               name="newPassword"
               label="New password"
               type="password"
               value={formikProps.values.newPassword}
+              error={
+                formikProps.touched.confirmPassword &&
+                Boolean(formikProps.errors.confirmPassword)
+              }
               onChange={formikProps.handleChange}
               onBlur={formikProps.handleBlur}
+              helperText={
+                formikProps.touched.confirmPassword &&
+                formikProps.errors.confirmPassword
+              }
             />
             <TextField
               name="confirmPassword"
@@ -102,6 +122,14 @@ export default function UpdatePasswordForm() {
               value={formikProps.values.confirmPassword}
               onChange={formikProps.handleChange}
               onBlur={formikProps.handleBlur}
+              error={
+                formikProps.touched.confirmPassword &&
+                Boolean(formikProps.errors.confirmPassword)
+              }
+              helperText={
+                formikProps.touched.confirmPassword &&
+                formikProps.errors.confirmPassword
+              }
             />
             <Button type="submit" variant="contained">
               Update password

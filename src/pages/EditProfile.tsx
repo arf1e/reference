@@ -1,4 +1,5 @@
-import { Box, CircularProgress, Zoom } from '@mui/material';
+import { ChevronLeft } from '@mui/icons-material';
+import { Box, Button, CircularProgress, Zoom } from '@mui/material';
 import _ from 'lodash';
 import { useEffect, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
@@ -57,6 +58,16 @@ export default function EditProfile() {
         <>
           {!isError && userResponse?.data && (
             <FormPage title="Edit Profile">
+              <Box
+                sx={{ mb: 1, display: 'flex', justifyContent: 'flex-start' }}
+              >
+                <Button
+                  startIcon={<ChevronLeft />}
+                  onClick={() => navigate(-1)}
+                >
+                  Go back
+                </Button>
+              </Box>
               <UserForm
                 providedValues={userResponse?.data}
                 successMessage="Profile updated!"

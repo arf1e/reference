@@ -9,35 +9,41 @@ export default function Hero() {
         container
         spacing={2}
         sx={{
-          my: 4,
-          py: 8,
+          my: 12,
         }}
       >
-        <Grid item sm={6} xs={12}>
-          <Heading variant="h4" component="h1" sx={{ mb: 2 }}>
-            Make all the BS make sense.
-          </Heading>
-          <Box sx={{ maxWidth: '80%' }}>
-            <Typography variant="body2" sx={{ mb: 1, lineHeight: '140%' }}>
-              There is a stupid, long-established habit in IT of coming up with
-              complex terms to describe fairly simple ideas and concepts.
-            </Typography>
-            <Typography variant="body2" sx={{ mb: 1, lineHeight: '140%' }}>
-              However, since the IT industry is growing constantly,
-              understanding these concepts requires understanding the underlying
-              concepts, which have prerequisites as well, and so on.
-            </Typography>
-            <Typography
-              variant="body2"
-              sx={{ mb: 1, fontWeight: 'bold', lineHeight: '140%' }}
-            >
-              Our library curates books providing fundamental and specialized
-              knowledge for developers.
-            </Typography>
-          </Box>
-        </Grid>
-        <Grid item sm={6} xs={12}>
+        <Grid item xs={12}>
           <HeroDecoration />
+        </Grid>
+        <Grid item xs={12} alignSelf="center" justifySelf="center" my={8}>
+          <Container
+            maxWidth="md"
+            sx={{
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+            }}
+          >
+            <Heading
+              variant="h3"
+              component="h1"
+              sx={{ mb: 2, textAlign: 'center' }}
+            >
+              Make all the BS make sense.
+            </Heading>
+            <Container maxWidth="sm">
+              <Box sx={{ textAlign: 'center' }}>
+                <Typography
+                  variant="body1"
+                  sx={{ lineHeight: '150%', maxWidth: '90%' }}
+                >
+                  In our library, we curate a cherry-picked list of books
+                  providing fundamental and specialised knowledge for
+                  developers.
+                </Typography>
+              </Box>
+            </Container>
+          </Container>
         </Grid>
       </Grid>
     </Container>
