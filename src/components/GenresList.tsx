@@ -12,7 +12,7 @@ import DisplayError from './DisplayError';
 import GenreCard from './GenreCard';
 import ListEmpty from './ListEmpty';
 
-export const GENRES_PER_PAGE = 4;
+export const GENRES_PER_PAGE = 8;
 
 const GENRES_LOADING = 'LOADING';
 const GENRES_ERROR = 'ERROR';

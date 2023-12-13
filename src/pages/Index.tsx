@@ -1,4 +1,5 @@
 import { Box } from '@mui/material';
+import AuthorPreview from '../components/AuthorsPreview';
 import Books from '../components/Books';
 import Collections from '../components/Collections';
 import Hero from '../components/Hero';
@@ -10,6 +11,7 @@ export default function Index() {
       <Meta />
       <Hero />
       <Collections />
+      <AuthorPreview />
       <Books />
     </Box>
   );

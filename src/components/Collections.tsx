@@ -11,10 +11,16 @@ const STATE_LIST = 'LIST';
 const STATE_EMPTY = 'EMPTY';
 const STATE_ERROR = 'ERROR';
 
+type GenresState =
+  | typeof STATE_LOADING
+  | typeof STATE_LIST
+  | typeof STATE_EMPTY
+  | typeof STATE_ERROR;
+
 const PREVIEW_GENRES_AMOUNT = 8;
 
-export default function Collections() {
-  const [state, setState] = useState(STATE_LOADING);
+export default function Genres() {
+  const [state, setState] = useState<GenresState>(STATE_LOADING);
   const {
     data: genresResponse,
     isFetching,
@@ -55,16 +61,13 @@ export default function Collections() {
     <Box>
       <Container>
         <Box>
-          <Typography variant="h4" mb={4}>
+          <Typography variant="h4" component="h2" mb={4}>
             Genres
           </Typography>
           <Grid container spacing={2}>
             <Grid item xs={12}>
               {isAdmin && (
-                <Link
-                  to="/genres/new"
-                  style={{ textDecoration: 'none', marginLeft: 'auto' }}
-                >
+                <Link to="/genres/new">
                   <Button endIcon={<AddOutlined />}>Add a new genre</Button>
                 </Link>
               )}
@@ -75,7 +78,7 @@ export default function Collections() {
                 <GenreCard key={genre._id} genre={genre} />
               ))}
             <Grid item xs={12} display="flex">
-              <Link to="/genres" style={{ textDecoration: 'none' }}>
+              <Link to="/genres">
                 <Button endIcon={<ChevronRightOutlined />}>
                   View all genres
                 </Button>

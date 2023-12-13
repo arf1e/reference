@@ -233,6 +233,7 @@ export default function BookForm({
             <Button
               type="submit"
               variant="contained"
+              disableElevation
               sx={{ my: 2 }}
               fullWidth
               disabled={formState === 'LOADING' || !formikProps.isValid}

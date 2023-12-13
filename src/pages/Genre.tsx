@@ -1,6 +1,7 @@
 import {
   ChevronLeftOutlined,
   DeleteOutline,
+  DeleteOutlined,
   EditOutlined,
 } from '@mui/icons-material';
 import { Box, Button, Container } from '@mui/material';
@@ -64,7 +65,7 @@ export default function Genre() {
       {isError && (
         <DisplayError
           sx={{ my: 8 }}
-          title="Failed to find the genre."
+          title="Failed to fetch the genre."
           errorOutput={error}
           singleEntity
         />
@@ -85,9 +86,8 @@ export default function Genre() {
                 <Link to={`/genres/${id}/edit`}>
                   <Button startIcon={<EditOutlined />}>Edit Genre</Button>
                 </Link>
-
                 <Button
-                  startIcon={<DeleteOutline />}
+                  startIcon={<DeleteOutlined />}
                   color="error"
                   sx={{
                     ml: 2,

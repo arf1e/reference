@@ -7,7 +7,7 @@ import {
   SignupInput,
   UpdatePasswordInput,
 } from '../types/auth';
-import { AuthorType } from '../types/authors';
+import { AuthorDto, AuthorFilters, AuthorType } from '../types/authors';
 import { BookDto, BookFilters, BookType } from '../types/books';
 import { GenreDto, GenreFilters, GenreType } from '../types/genres';
 import { ProfileUpdateDto, UserType } from '../types/users';
@@ -60,7 +60,20 @@ export const libraryApi = createApi({
           Authorization: `Bearer ${accessToken}`,
         },
       }),
-      invalidatesTags: [{ type: 'Book', id: 'LIST' }],
+      invalidatesTags: (result) =>
+        result
+          ? [
+              { type: 'Book', id: 'LIST' },
+              ...result.data.authors.map((author) => ({
+                type: 'Author' as const,
+                id: author._id,
+              })),
+              ...result.data.genres.map((genre) => ({
+                type: 'Genre' as const,
+                id: genre._id,
+              })),
+            ]
+          : [{ type: 'Book', id: 'LIST' }],
     }),
 
     updateBook: builder.mutation<
@@ -76,7 +89,19 @@ export const libraryApi = createApi({
         },
       }),
       invalidatesTags: (result, _error) =>
-        result ? [{ type: 'Book', id: result.data._id }] : [],
+        result
+          ? [
+              { type: 'Book', id: result.data._id },
+              ...result.data.authors.map((author) => ({
+                type: 'Author' as const,
+                id: author._id,
+              })),
+              ...result.data.genres.map((genre) => ({
+                type: 'Genre' as const,
+                id: genre._id,
+              })),
+            ]
+          : [],
     }),
 
     deleteBook: builder.mutation<
@@ -91,7 +116,7 @@ export const libraryApi = createApi({
         },
       }),
       invalidatesTags: (_result, error, args) =>
-        error ? [] : [{ type: 'Book', id: args.id }],
+        error ? [] : [{ type: 'Book', id: args.id }, 'Genre', 'Author'],
     }),
 
     lendBooks: builder.mutation<
@@ -214,12 +239,76 @@ export const libraryApi = createApi({
       invalidatesTags: ['Genre'],
     }),
 
+    getAllAuthors: builder.query<
+      ApiResponse<WithPagination<{ authors: AuthorType[] }>>,
+      AuthorFilters & PaginationInput
+    >({
+      query: (filters) => ({
+        url: '/authors',
+        params: filters,
+      }),
+      providesTags: (result) =>
+        result
+          ? [
+              ...result.data.authors.map(({ _id }) => ({
+                type: 'Author' as const,
+                id: _id,
+              })),
+            ]
+          : [{ type: 'Author', id: 'LIST' }],
+    }),
+
     getAuthorById: builder.query<ApiResponse<AuthorType>, string>({
       query: (id) => ({
         url: `/authors/${id}`,
       }),
       providesTags: (result) =>
         result ? [{ type: 'Author', id: result.data._id }] : [],
+    }),
+
+    updateAuthorById: builder.mutation<
+      ApiResponse<AuthorType>,
+      { accessToken: string; id: string; authorData: AuthorDto }
+    >({
+      query: ({ accessToken, id, authorData: body }) => ({
+        url: `/authors/${id}`,
+        method: 'PUT',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body,
+      }),
+      invalidatesTags: (result) =>
+        result ? [{ type: 'Author', id: result.data._id }] : [],
+    }),
+
+    createAuthor: builder.mutation<
+      ApiResponse<AuthorType>,
+      { accessToken: string; authorData: AuthorDto }
+    >({
+      query: ({ accessToken, authorData }) => ({
+        url: '/authors',
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+        body: authorData,
+      }),
+      invalidatesTags: [{ type: 'Author', id: 'LIST' }],
+    }),
+
+    deleteAuthorById: builder.mutation<
+      void,
+      { accessToken: string; id: string }
+    >({
+      query: ({ accessToken, id }) => ({
+        url: `/authors/${id}`,
+        method: 'DELETE',
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      }),
+      invalidatesTags: ['Author'],
     }),
 
     login: builder.mutation<ApiResponse<JwtResponse>, LoginInput>({
@@ -318,4 +407,8 @@ export const {
   useCreateGenreMutation,
   useUpdateGenreByIdMutation,
   useDeleteGenreByIdMutation,
+  useGetAllAuthorsQuery,
+  useCreateAuthorMutation,
+  useDeleteAuthorByIdMutation,
+  useUpdateAuthorByIdMutation,
 } = libraryApi;
