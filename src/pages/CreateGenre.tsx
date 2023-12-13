@@ -17,6 +17,7 @@ export default function CreateGenre() {
             buttonTitle="Create genre"
             backLink="/"
             backTitle="Back to main"
+            resetOnSuccess
             onSubmit={(values) =>
               createGenre({ accessToken: jwt || '', genreData: values })
             }

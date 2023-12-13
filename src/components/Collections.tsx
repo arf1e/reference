@@ -61,7 +61,7 @@ export default function Genres() {
     <Box>
       <Container>
         <Box>
-          <Typography variant="h4" component="h2" mb={4}>
+          <Typography variant="h4" component="h2" mb={2}>
             Genres
           </Typography>
           <Grid container spacing={2}>

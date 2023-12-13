@@ -1,5 +1,5 @@
 import { ButtonProps } from '@mui/base';
-import { DeleteOutline, DeleteOutlined } from '@mui/icons-material';
+import { DeleteOutlined } from '@mui/icons-material';
 import { useState } from 'react';
 import handleAsyncOperation from '../utils/handleAsyncOperation';
 import LoadingButton from './LoadingButton';

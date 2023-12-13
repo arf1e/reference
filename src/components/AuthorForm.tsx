@@ -1,11 +1,4 @@
-import {
-  Box,
-  Button,
-  Grid,
-  TextField,
-  Typography,
-  useTheme,
-} from '@mui/material';
+import { Box, Button, TextField, useTheme } from '@mui/material';
 import { Formik } from 'formik';
 import _ from 'lodash';
 import handleFileUpload from '../api/handleFileUpload';
@@ -23,6 +16,7 @@ import ImagePreview from './ImagePreview';
 type Props = {
   providedValues?: AuthorType;
   onSubmit: (values: AuthorDto) => Promise<unknown>;
+  resetOnSuccess?: boolean;
   successMessage: string;
 };
 
@@ -45,12 +39,13 @@ const convertAuthorToFormValues = (author: AuthorType) => {
 export default function AuthorForm({
   providedValues,
   onSubmit,
+  resetOnSuccess = false,
   successMessage,
 }: Props) {
   const { formState, setFormState, message, setMessage } = useStatusBar();
   const theme = useTheme();
 
-  const handleSubmit = async (values: FormType) => {
+  const handleSubmit = async (values: FormType, resetForm: () => void) => {
     setFormState('LOADING');
     if (!hasImage(values)) {
       setFormState('ERROR');
@@ -72,6 +67,7 @@ export default function AuthorForm({
       onSuccess: () => {
         setFormState('SUCCESS');
         setMessage(successMessage);
+        resetOnSuccess && resetForm();
       },
       onError: (error) => {
         setFormState('ERROR');
@@ -89,7 +85,7 @@ export default function AuthorForm({
           ...(providedValues ? convertAuthorToFormValues(providedValues) : {}),
         }}
         validationSchema={authorValidationSchema}
-        onSubmit={handleSubmit}
+        onSubmit={(values, { resetForm }) => handleSubmit(values, resetForm)}
       >
         {(formikProps) => (
           <Box

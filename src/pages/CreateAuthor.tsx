@@ -1,5 +1,5 @@
 import { ChevronLeft } from '@mui/icons-material';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
 import { useCreateAuthorMutation } from '../api/library';
 import AuthorForm from '../components/AuthorForm';
@@ -25,6 +25,7 @@ export default function CreateAuthor() {
       </Box>
       <AuthorForm
         onSubmit={handleCreateAuthor}
+        resetOnSuccess
         successMessage="Author created!"
       />
     </FormPage>

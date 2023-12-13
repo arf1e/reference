@@ -21,13 +21,17 @@ export default function EditAuthor() {
         <Zoom in={true}>
           <Box>
             <FormPage title="Update Author">
-            <AuthorForm
-              successMessage="Author has been updated"
-              onSubmit={(values) =>
-                updateAuthor({ accessToken: jwt || '', id, authorData: values })
-              }
-              providedValues={authorResponse.data}
-            />
+              <AuthorForm
+                successMessage="Author has been updated"
+                onSubmit={(values) =>
+                  updateAuthor({
+                    accessToken: jwt || '',
+                    id,
+                    authorData: values,
+                  })
+                }
+                providedValues={authorResponse.data}
+              />
             </FormPage>
           </Box>
         </Zoom>

@@ -7,7 +7,7 @@ type BooksState = {
   pagination: PaginationInput;
 };
 
-const initialState: BooksState = {
+export const initialState: BooksState = {
   filters: {
     title: '',
     genre: '',
@@ -32,14 +32,6 @@ export const booksSlice = createSlice({
       return initialState;
     },
 
-    incrementPage: (state) => {
-      state.pagination.page += 1;
-    },
-
-    decrementPage: (state) => {
-      state.pagination.page -= 1;
-    },
-
     setPage: (state, action: PayloadAction<number>) => {
       state.pagination.page = action.payload;
     },
@@ -49,12 +41,6 @@ export const booksSlice = createSlice({
 export const selectFilters = (state: BooksState) => state.filters;
 export const selectPagination = (state: BooksState) => state.pagination;
 
-export const {
-  setFilters,
-  incrementPage,
-  decrementPage,
-  setPage,
-  clearFilters,
-} = booksSlice.actions;
+export const { setFilters, setPage, clearFilters } = booksSlice.actions;
 
 export default booksSlice.reducer;

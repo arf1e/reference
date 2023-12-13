@@ -21,6 +21,7 @@ export default function CreateBook() {
       </Box>
       <BookForm
         onSubmit={handleCreateBook}
+        resetOnSuccess
         successMessage="New book has been added"
       />
     </FormPage>

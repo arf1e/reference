@@ -30,6 +30,7 @@ import { getImageUrl, handleClearImage, hasImage } from '../utils/images';
 
 type Props = {
   providedValues?: BookType;
+  resetOnSuccess?: boolean;
   onSubmit: (book: BookDto) => Promise<any>;
   successMessage: string;
 };
@@ -51,6 +52,7 @@ export default function BookForm({
   providedValues,
   onSubmit,
   successMessage,
+  resetOnSuccess = false,
 }: Props) {
   const { formState, setFormState, message, setMessage } = useStatusBar();
   const [authorInput, setAuthorInput] = useState('');
@@ -64,7 +66,7 @@ export default function BookForm({
 
   const coverUrl = (values: FormType) => getImageUrl(values);
 
-  const handleSubmit = async (values: FormType) => {
+  const handleSubmit = async (values: FormType, resetForm: () => void) => {
     setFormState('LOADING');
     if (!hasCover(values)) {
       setFormState('ERROR');
@@ -85,6 +87,7 @@ export default function BookForm({
       onSuccess: () => {
         setFormState('SUCCESS');
         setMessage(successMessage);
+        resetOnSuccess && resetForm();
       },
       onError: (error) => {
         setFormState('ERROR');
@@ -102,7 +105,7 @@ export default function BookForm({
           ...(providedValues ? convertBookToFormValues(providedValues) : {}),
         }}
         validationSchema={bookValidationSchema}
-        onSubmit={handleSubmit}
+        onSubmit={(values, { resetForm }) => handleSubmit(values, resetForm)}
       >
         {(formikProps) => (
           <Box
@@ -202,7 +205,11 @@ export default function BookForm({
                   format="YYYY-MM-DD"
                   label="Publication Date"
                   name="publishedDate"
-                  value={dayjs(formikProps.values.publishedDate)}
+                  value={
+                    formikProps.values.publishedDate.length > 0
+                      ? dayjs(formikProps.values.publishedDate)
+                      : null
+                  }
                   onChange={(value) =>
                     formikProps.setFieldValue(
                       'publishedDate',

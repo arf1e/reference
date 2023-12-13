@@ -20,7 +20,7 @@ const defaultValues: BookFilters = {
   genre: '',
 };
 
-export const BOOKS_PER_SPECIFIED_PAGE = 16;
+export const BOOKS_PER_SPECIFIED_PAGE = 8;
 
 const BOOKS_LOADING = 'LOADING';
 const BOOKS_ERROR = 'ERROR';
@@ -67,7 +67,7 @@ export default function BooksBy({ genre, author }: Props) {
     }
 
     setState(BOOKS_LIST);
-  }, [isFetching, error, booksResponse?.data.books.length]);
+  }, [isFetching, isError, booksResponse?.data.books.length]);
 
   const renderList = useMemo(
     () =>

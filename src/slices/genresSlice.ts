@@ -7,7 +7,7 @@ type GenresState = {
   pagination: PaginationInput;
 };
 
-const initialState: GenresState = {
+export const initialState: GenresState = {
   filters: {
     title: '',
   },

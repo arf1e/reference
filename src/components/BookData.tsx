@@ -1,13 +1,5 @@
 import { ChevronLeft } from '@mui/icons-material';
-import {
-  Box,
-  Button,
-  Container,
-  Grid,
-  Grow,
-  Typography,
-  Link as MaterialLink,
-} from '@mui/material';
+import { Box, Button, Container, Grid, Grow, Typography } from '@mui/material';
 import pluralize from 'pluralize';
 import { useNavigate } from 'react-router-dom';
 import useAuth from '../hooks/useAuth';

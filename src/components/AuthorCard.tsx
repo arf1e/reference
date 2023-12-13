@@ -24,14 +24,21 @@ export default function AuthorCard({ author }: Props) {
             transition: '0.3s',
             '&:hover': {
               backgroundColor: composeHoverBackgroundColor(theme, 1),
-              transform: 'scale(1.01)',
+            },
+            '&:hover .img-container': {
+              transform: 'scale(1.1)',
+            },
+            '&:hover .info-container': {
+              transform: 'translateY(4px)',
             },
           }}
         >
           <Box
+            className="img-container"
             sx={{
               width: 80,
               height: 80,
+              transition: '0.3s',
               backgroundColor: composeBackgroundColor(theme, 2),
               borderRadius: '50%',
               mb: 2,
@@ -45,14 +52,19 @@ export default function AuthorCard({ author }: Props) {
               style={{ borderRadius: '50%', objectFit: 'contain' }}
             />
           </Box>
-          <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
-            {author.name}
-          </Typography>
-          {author.booksCount > 0 && (
-            <Typography variant="body2" sx={{ color: theme.palette.grey[500] }}>
-              {author.booksCount} {pluralize('book', author.booksCount)}
+          <Box className="info-container" sx={{ transition: '0.3s' }}>
+            <Typography variant="subtitle1" sx={{ fontWeight: 500 }}>
+              {author.name}
             </Typography>
-          )}
+            {author.booksCount > 0 && (
+              <Typography
+                variant="body2"
+                sx={{ color: theme.palette.grey[500] }}
+              >
+                {author.booksCount} {pluralize('book', author.booksCount)}
+              </Typography>
+            )}
+          </Box>
         </Box>
       </Link>
     </Grid>

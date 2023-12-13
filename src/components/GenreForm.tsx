@@ -11,6 +11,7 @@ import handleAsyncOperation from '../utils/handleAsyncOperation';
 type Props = {
   providedValues?: GenreType;
   buttonTitle?: string;
+  resetOnSuccess?: boolean;
   successMessage: string;
   backLink: string;
   backTitle: string;
@@ -24,6 +25,7 @@ const initialValues: GenreDto = {
 export default function GenreForm({
   providedValues,
   onSubmit,
+  resetOnSuccess = false,
   backLink,
   successMessage,
   buttonTitle,
@@ -32,12 +34,13 @@ export default function GenreForm({
   const { formState, setFormState, message, setMessage } = useStatusBar();
   const theme = useTheme();
 
-  const handleSubmit = async (values: GenreDto) => {
+  const handleSubmit = async (values: GenreDto, resetForm: () => void) => {
     setFormState('LOADING');
     await handleAsyncOperation(() => onSubmit(values), {
       onSuccess: () => {
         setFormState('SUCCESS');
         setMessage(successMessage);
+        resetOnSuccess && resetForm();
       },
       onError: (error) => {
         setFormState('ERROR');
@@ -63,7 +66,7 @@ export default function GenreForm({
       <StatusBar state={formState}>{message}</StatusBar>
       <Formik
         initialValues={{ ...initialValues, ...providedValues }}
-        onSubmit={handleSubmit}
+        onSubmit={(values, { resetForm }) => handleSubmit(values, resetForm)}
       >
         {(formikProps) => (
           <Box

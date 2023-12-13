@@ -1,6 +1,5 @@
 import {
   ChevronLeftOutlined,
-  DeleteOutline,
   DeleteOutlined,
   EditOutlined,
 } from '@mui/icons-material';
@@ -59,7 +58,7 @@ export default function Genre() {
   };
 
   return (
-    <Box>
+    <Box sx={{ mb: 12 }}>
       <Meta pageTitle={genreResponse?.data.title || 'Genre'} />
       {isFetching && <EntityLoading />}
       {isError && (

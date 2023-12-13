@@ -58,7 +58,7 @@ export default function Author() {
   };
 
   return (
-    <Box>
+    <Box sx={{ mb: 12 }}>
       <Meta pageTitle={authorResponse?.data.name || 'Author'} />
       {isFetching && <EntityLoading />}
       {isError && (

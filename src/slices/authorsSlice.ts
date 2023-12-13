@@ -7,7 +7,7 @@ type AuthorsState = {
   pagination: PaginationInput;
 };
 
-const initialState: AuthorsState = {
+export const initialState: AuthorsState = {
   filters: {
     name: '',
   },
@@ -38,6 +38,7 @@ export const {
   setPage: setAuthorsPage,
   clearFilters: clearAuthorsFilters,
 } = authorsSlice.actions;
+
 export const selectAuthorsFilters = (state: AuthorsState) => state.filters;
 export const selectAuthorsPagination = (state: AuthorsState) =>
   state.pagination;

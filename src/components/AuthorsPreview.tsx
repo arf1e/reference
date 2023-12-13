@@ -4,7 +4,7 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useGetAllAuthorsQuery } from '../api/library';
 import useAuth from '../hooks/useAuth';
-import AuthorCard from './AuthorCard';
+import AuthorCard, { AuthorCardSkeleton } from './AuthorCard';
 
 const STATE_LOADING = 'LOADING';
 const STATE_LIST = 'LIST';
@@ -50,14 +50,17 @@ export default function AuthorPreview() {
     }
 
     setState(STATE_LIST);
-  });
+  }, [isFetching, isError, authorsResponse?.data.authors.length]);
 
-  const renderSkeletons = () => <></>;
+  const renderSkeletons = () =>
+    new Array(PREVIEW_AUTHORS_AMOUNT)
+      .fill(null)
+      .map((_, index) => <AuthorCardSkeleton key={index} />);
 
   return (
     <Box my={12}>
       <Container>
-        <Typography variant="h4" component="h2" mb={4}>
+        <Typography variant="h4" component="h2" mb={2}>
           Authors
         </Typography>
         <Grid container spacing={2}>
@@ -65,7 +68,7 @@ export default function AuthorPreview() {
             {isAdmin && (
               <Link to="/authors/new">
                 <Button color="primary" endIcon={<AddOutlined />}>
-                  Create Author
+                  Add a new author
                 </Button>
               </Link>
             )}
