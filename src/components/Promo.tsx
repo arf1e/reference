@@ -4,53 +4,7 @@ import {
   WalletOutlined,
 } from '@mui/icons-material';
 import { Box, Container, Grid, Typography, useTheme } from '@mui/material';
-import { ReactNode } from 'react';
-import composeBackgroundColor from '../utils/composeBackgroundColor';
-
-const Feature = ({
-  icon,
-  title,
-  description,
-}: {
-  icon: ReactNode;
-  title: string;
-  description: string;
-}) => {
-  const theme = useTheme();
-  return (
-    <Grid item xs={6} md={4}>
-      <Box
-        sx={{
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',
-          justifyContent: 'center',
-        }}
-      >
-        <Box
-          sx={{
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            justifyContent: 'center',
-            borderRadius: 4,
-            width: 80,
-            height: 80,
-            backgroundColor: composeBackgroundColor(theme, 0),
-          }}
-        >
-          {icon}
-        </Box>
-        <Typography variant="h6" sx={{ mt: 2 }}>
-          {title}
-        </Typography>
-        <Typography variant="body2" color="text.secondary" textAlign="center">
-          {description}
-        </Typography>
-      </Box>
-    </Grid>
-  );
-};
+import PromoFeature from './PromoFeature';
 
 export default function Promo() {
   const theme = useTheme();
@@ -87,7 +41,7 @@ export default function Promo() {
           Nice to meet you!
         </Typography>
         <Grid container spacing={6} sx={{ mt: 4 }}>
-          <Feature
+          <PromoFeature
             icon=<AutoAwesomeOutlined
               fontSize="large"
               sx={{ color: theme.palette.primary.main }}
@@ -95,7 +49,7 @@ export default function Promo() {
             title="Books written for humans"
             description="And not just for their authors"
           />
-          <Feature
+          <PromoFeature
             icon=<SurfingOutlined
               fontSize="large"
               sx={{ color: theme.palette.primary.main }}
@@ -103,7 +57,7 @@ export default function Promo() {
             title="Your results oriented"
             description="Books that provide both theoretical and practical knowledge"
           />
-          <Feature
+          <PromoFeature
             icon=<WalletOutlined
               fontSize="large"
               sx={{ color: theme.palette.primary.main }}
