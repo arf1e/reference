@@ -1,2 +1,2 @@
 export const cryingCatGif =
-  'https://res-console.cloudinary.com/dzq4iaveg/media_explorer_thumbnails/7d32d016802ce2181c27023f46297d65/detailed';
+  'https://res.cloudinary.com/dzq4iaveg/image/upload/v1702539795/e0he74lzwirp6tuq6epa.gif';
