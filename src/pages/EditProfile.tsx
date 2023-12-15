@@ -1,14 +1,13 @@
 import { ChevronLeft } from '@mui/icons-material';
 import { Box, Button, CircularProgress, Zoom } from '@mui/material';
 import _ from 'lodash';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGetUserByIdQuery, useUpdateUserByIdMutation } from '../api/library';
 import DisplayError from '../components/DisplayError';
 import FormPage from '../components/FormPage';
 import UserForm from '../components/UserForm';
 import useAuth from '../hooks/useAuth';
-import useOwnership from '../hooks/useOwnership';
 
 const STATE_LOADING = 'LOADING';
 const STATE_GRANTED = 'GRANTED';
@@ -22,9 +21,9 @@ type PageState =
 export default function EditProfile() {
   const [state, setState] = useState<PageState>(STATE_LOADING);
   const { id } = useParams<{ id: string }>() as { id: string };
-  const { isLoading, isAdmin, jwt } = useAuth();
-  const isOwn = useOwnership(id);
+  const { isLoading, isAdmin, jwt, user } = useAuth();
   const navigate = useNavigate();
+  const isOwn = useMemo(() => user?._id === id, [user?._id, id]);
   const {
     data: userResponse,
     isError,
