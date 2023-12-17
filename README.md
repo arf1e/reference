@@ -1,4 +1,4 @@
-[![Test & Build frontend](https://github.com/arf1e/library/actions/workflows/test-and-build.yml/badge.svg)](https://github.com/arf1e/library/actions/workflows/test-and-build.yml)
+[![Test & Build frontend](https://github.com/arf1e/reference/actions/workflows/test-and-build.yml/badge.svg)](https://github.com/arf1e/reference/actions/workflows/test-and-build.yml)
 
 # Introduction
 
@@ -57,7 +57,7 @@ Frontend of a non-existent library.
 
 ## Getting started
 
-1. Clone this repo with `git clone https://github.com/arf1e/library.git` command.
+1. Clone this repo with `git clone https://github.com/arf1e/reference.git` command.
 1. Install project dependencies using `npm ci` or `npm install` command.
 1. Run the app with `npm start`.
 
